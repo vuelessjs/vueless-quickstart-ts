@@ -12,7 +12,7 @@ npm install -g pnpm
 
 ```bash
 # download project from remote repository
-git clone origin git@gitlab.com:<project_name>.git
+git clone origin git@github.com:vuelessjs/vueless-quickstart.git
 
 # go to project folder
 cd <project_name>
