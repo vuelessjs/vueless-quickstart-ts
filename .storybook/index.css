@@ -1,0 +1,446 @@
+@config "./tailwind.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------- Storybook Preview UI -------------------- */
+/* -------------------- General -------------------- */
+
+::-webkit-scrollbar {
+  @apply w-3 h-3;
+}
+
+::-webkit-scrollbar-track {
+  @apply transition;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-sm transition;
+}
+
+.light::-webkit-scrollbar-track,
+.light ::-webkit-scrollbar-track {
+  @apply bg-gray-50 hover:bg-gray-200;
+}
+
+.light::-webkit-scrollbar-thumb,
+.light ::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 hover:bg-gray-500;
+}
+
+ .dark::-webkit-scrollbar-track,
+ .dark ::-webkit-scrollbar-track {
+  @apply bg-gray-950 hover:bg-gray-800;
+}
+
+.dark::-webkit-scrollbar-thumb,
+.dark ::-webkit-scrollbar-thumb  {
+  @apply bg-gray-600 hover:bg-gray-500;
+}
+
+@supports (-moz-appearance: none) {
+  .light * {
+    scrollbar-width: thin;
+    scrollbar-color: #9ca3af #f9fafb; /* thumb color track color */
+  }
+
+  .dark * {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #030712; /* thumb color track color */
+  }
+}
+
+html.dark {
+  @apply bg-gray-950;
+}
+
+html.light {
+  @apply bg-gray-50;
+}
+
+body {
+  font-family: Roboto, sans-serif;
+}
+
+.light .sbdocs .sbdocs-content > h1,
+.light .sbdocs .sbdocs-content > h2,
+.light .sbdocs .sbdocs-content > h3,
+.light .sbdocs .sbdocs-content > .sb-anchor > h3,
+.light .sbdocs .sbdocs-content > .sb-anchor > p,
+.light .sbdocs .sbdocs-content > p,
+.light .sbdocs .sbdocs-content > table th,
+.light .sbdocs .sbdocs-content > table td {
+  @apply !text-gray-900;
+}
+
+.dark .sbdocs .sbdocs-content > h1,
+.dark .sbdocs .sbdocs-content > h2,
+.dark .sbdocs .sbdocs-content > h3,
+.dark .sbdocs .sbdocs-content > .sb-anchor > h3,
+.dark .sbdocs .sbdocs-content > .sb-anchor > p,
+.dark .sbdocs .sbdocs-content > p,
+.dark .sbdocs .sbdocs-content > table th,
+.dark .sbdocs .sbdocs-content > table td {
+  @apply !text-gray-200;
+}
+
+.sbdocs .sbdocs-content > table tr {
+  @apply border-none;
+}
+
+.sbdocs .sbdocs-content > table th,
+.sbdocs .sbdocs-content > table td {
+  @apply border-l-0 border-t-0 text-left;
+}
+
+.sbdocs .sbdocs-content > table th:last-child,
+.sbdocs .sbdocs-content > table td:last-child {
+  @apply border-r-0;
+}
+
+.sbdocs .sbdocs-content > table tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.light .sbdocs .sbdocs-content > table th {
+  @apply bg-gray-100 border-gray-200;
+}
+
+.light .sbdocs .sbdocs-content > table td {
+  @apply bg-white border-gray-200;
+}
+
+.light .sbdocs .sbdocs-content > table {
+  @apply rounded-lg outline outline-1 outline-gray-200 overflow-hidden;
+}
+
+.dark .sbdocs .sbdocs-content > table th {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.dark .sbdocs .sbdocs-content > table td {
+  @apply bg-gray-900 border-gray-700;
+}
+
+.dark .sbdocs .sbdocs-content > table {
+  @apply rounded-lg outline outline-1 outline-gray-700 overflow-hidden;
+}
+
+/* -------------------- Storybook preview skeleton -------------------- */
+
+.light .sb-preparing-docs,
+.light .sb-preparing-story {
+  @apply bg-gray-50;
+}
+
+.light .sb-previewBlock {
+  @apply bg-white border-gray-200 rounded-lg;
+  box-shadow: none !important;
+}
+
+.light .sb-previewBlock_header {
+  @apply border-solid border-b !border-b-gray-200;
+  box-shadow: none !important;
+}
+
+.light .sb-previewBlock_icon {
+  @apply bg-gray-300;
+}
+
+.light .sb-argstableBlock-body {
+  @apply rounded;
+  box-shadow: rgb(0 0 0 / 5%) 0 1px 3px 1px, rgb(0 0 0 / 4%) 0 0 0 1px;
+}
+
+.light .sb-argstableBlock-body td {
+  @apply bg-white border-solid border-b !border-b-gray-200;
+}
+
+.light .sb-argstableBlock-body tr:last-child td {
+  @apply border-b-0;
+}
+
+.light .sb-argstableBlock span,
+.light .sb-argstableBlock button {
+  @apply bg-gray-200;
+}
+
+.dark .sb-preparing-docs,
+.dark .sb-preparing-story {
+  @apply bg-gray-950;
+}
+
+.dark .sb-previewBlock {
+  @apply bg-gray-900 border-gray-800 rounded-lg;
+  box-shadow: none !important;
+}
+
+.dark .sb-previewBlock_header {
+  @apply border-solid border-b !border-b-gray-800;
+  box-shadow: none !important;
+}
+
+.dark .sb-previewBlock_icon {
+  @apply bg-gray-700;
+}
+
+.dark .sb-argstableBlock-body {
+  @apply rounded;
+  box-shadow: rgb(255 255 255 / 10%) 0 1px 3px 1px, rgb(255 255 255 / 7%) 0 0 0 1px;
+}
+
+.dark .sb-argstableBlock-body td {
+  @apply bg-gray-900 border-solid border-b !border-b-gray-800;
+}
+
+.dark .sb-argstableBlock-body tr:last-child td {
+  @apply border-b-0;
+}
+
+.dark .sb-argstableBlock span,
+.dark .sb-argstableBlock button {
+  @apply bg-gray-700;
+}
+
+/* -------------------- All docs block -------------------- */
+
+.dark .sbdocs {
+  @apply bg-gray-950;
+}
+
+/* -------------------- Main story -------------------- */
+
+.sb-anchor {
+  @apply mt-2;
+}
+
+.dark .sb-anchor > p > a {
+  @apply text-green-400;
+}
+
+.light .sb-anchor > p > a {
+  @apply text-green-600;
+}
+
+.sb-bar,
+.docs-story {
+  @apply bg-white;
+}
+
+.vl-dark .sb-bar,
+.vl-dark .docs-story {
+  @apply bg-gray-900;
+}
+
+.docs-story > div > div {
+  @apply mb-px;
+}
+
+.sb-bar {
+  @apply border-0;
+}
+
+.dark .sb-bar {
+  @apply border-b border-gray-300;
+  box-shadow: none !important;
+}
+
+.vl-dark .sb-bar  {
+  @apply border-b border-gray-800;
+  box-shadow: none !important;
+}
+
+.sbdocs.sbdocs-preview .prismjs {
+  @apply border-t border-t-gray-700 bg-gray-800;
+}
+
+.vl-dark .docblock-code-toggle {
+  @apply bg-gray-800 border-gray-800 text-gray-400 rounded-tl-none;
+}
+
+.sbdocs-preview {
+  box-shadow: none !important;
+}
+
+.dark .sbdocs.sbdocs-preview,
+.vl-dark .sbdocs.sbdocs-preview {
+  @apply border-gray-800;
+}
+
+/* -------------------- Args table -------------------- */
+
+@media screen and (max-width: 600px) {
+  div:has(> .docblock-argstable) {
+    @apply !mb-10 overflow-x-scroll;
+  }
+
+  .docblock-argstable {
+    @apply !mb-0;
+  }
+}
+
+.dark .docblock-argstable,
+.dark .docblock-argstable-head th {
+  @apply !text-gray-200;
+}
+
+.docblock-argstable-body {
+  @apply rounded-lg !filter-none;
+}
+
+.docblock-argstable-body tr td {
+  @apply !rounded-none;
+}
+
+.docblock-argstable-body tr:not([title]) > td {
+  @apply !bg-white;
+}
+
+.dark .docblock-argstable-body tr > td {
+  @apply border-b border-solid !bg-gray-900 border-s-0 border-e-0 !border-t-gray-800;
+  border-block-end: none !important;
+}
+
+.dark .docblock-argstable-body tr > td:first-child,
+.dark .docblock-argstable-body tr > td:last-child {
+  @apply !border-s-gray-800 !border-e-gray-800;
+}
+
+.dark .docblock-argstable-body {
+  @apply border border-b-gray-800;
+}
+
+.dark .docblock-argstable-body tr[title] > td {
+  @apply !bg-gray-800 !text-gray-400;
+}
+
+.dark .docblock-argstable-body tr[title] > td svg {
+  @apply !text-gray-400;
+}
+
+.light .sbdocs .sbdocs-content code,
+.light .docblock-argstable-body tr > td > div + div > span[class],
+.light .docblock-argstable-body tr > td > div + div > div > span,
+.light .docblock-argstable-body tr > td:nth-child(2) > div > div > span[class],
+.light .docblock-argstable-body tr > td:nth-child(3) > div > span[class],
+.light .docblock-argstable-body tr > td:nth-child(3) > span[class] {
+  @apply bg-gray-100 border-gray-200 text-gray-800;
+}
+
+.dark .rejt-value-node:hover .rejt-value,
+.dark .sbdocs .sbdocs-content code,
+.dark .docblock-argstable-body tr > td > div + div > span[class],
+.dark .docblock-argstable-body tr > td > div + div > div > span,
+.dark .docblock-argstable-body tr > td:nth-child(2) > div > div > span[class],
+.dark .docblock-argstable-body tr > td:nth-child(3) > div > span[class],
+.dark .docblock-argstable-body tr > td:nth-child(3) > span[class] {
+  @apply bg-gray-800 border-gray-700/50 text-gray-400;
+}
+
+.dark .sb-story code,
+.light .sb-story code {
+  @apply !bg-inherit !text-inherit;
+}
+
+.dark .docblock-argstable-body tr > td > div + div > span:not([class]) {
+  @apply text-gray-400;
+}
+
+.dark .docblock-argstable-body tr > td .rejt-edit-form,
+.dark .docblock-argstable-body tr > td input:not([type="checkbox"]),
+.dark .docblock-argstable-body tr > td textarea,
+.dark .docblock-argstable-body tr > td select,
+.dark .docblock-argstable-body tr > td:nth-child(4) button {
+  @apply text-gray-200 bg-gray-800 border border-solid border-gray-700/50 hover:border-gray-600 focus:border-gray-500 text-[13px];
+  box-shadow: none !important;
+  color-scheme: dark;
+}
+
+.docblock-argstable-body tr > td .rejt-add-value-node button {
+  @apply px-1.5 py-0.5 leading-none;
+}
+
+.light .docblock-argstable-body tr > td .rejt-add-value-node button[type="submit"] {
+  @apply bg-white;
+}
+
+.light .docblock-argstable-body tr > td .rejt-edit-form,
+.light .docblock-argstable-body tr > td input:not([type="checkbox"]),
+.light .docblock-argstable-body tr > td textarea,
+.light .docblock-argstable-body tr > td select,
+.light .docblock-argstable-body tr > td:nth-child(4) button {
+  @apply text-gray-900 border border-solid border-gray-300 hover:border-gray-400 focus:border-gray-500 text-[13px];
+  box-shadow: none !important;
+}
+
+.dark .docblock-argstable-body label[aria-disabled] {
+  @apply bg-gray-800;
+}
+
+.dark .docblock-argstable-body label[aria-disabled] span {
+  @apply text-gray-200;
+}
+
+.dark .docblock-argstable-body [type='checkbox'],
+.dark .docblock-argstable-body [type='radio'] {
+  @apply border border-solid !border-gray-700;
+  box-shadow: none !important;
+}
+
+.dark .docblock-argstable-body [type='checkbox']:checked,
+.dark .docblock-argstable-body [type='radio']:checked {
+  @apply bg-gray-900 invert grayscale !border-gray-300;
+}
+
+.light .docblock-argstable-body [type='checkbox']:checked,
+.light .docblock-argstable-body [type='radio']:checked {
+  @apply !bg-gray-900;
+}
+
+.docblock-argstable [type='checkbox']:focus,
+.docblock-argstable [type='radio']:focus {
+  @apply !ring-gray-300;
+}
+
+.dark .rejt-name,
+.dark .rejt-collapsed-text {
+  @apply !text-gray-400;
+}
+
+.dark .rejt-value {
+  @apply !text-gray-200;
+}
+
+/* -------------------- Code block and user markdown -------------------- */
+
+#storybook-docs h2 {
+  @apply mt-8 mb-6 pb-2 font-bold;
+}
+
+.dark h2 {
+  @apply border-b-gray-800;
+}
+
+.docblock-source {
+  @apply !bg-gray-800 border-gray-800 !rounded-lg;
+  box-shadow: none !important;
+}
+
+.dark .docblock-source {
+  @apply !bg-gray-900 !border-gray-800;
+}
+
+.dark .docblock-source button {
+  @apply bg-gray-800 border-gray-800 text-gray-400 rounded-tl-none;
+}
+
+/* -------------------- Storybook story preview -------------------- */
+
+.vl-dark {
+  @apply min-h-full bg-gray-900;
+}
+
+.vl-light {
+  @apply min-h-full bg-white;
+}
