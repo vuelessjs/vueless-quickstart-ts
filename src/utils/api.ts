@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { camelCase, snakeCase, isArray, isObject, reduce } from "lodash-es";
 import {
   notifySuccess,
@@ -9,7 +8,8 @@ import {
 } from "vueless";
 import QS from "qs";
 import axios from "axios";
-import { auth0 } from "./auth0Util";
+
+import type { NotificationType } from "vueless/ui.text-notify/constants";
 
 export const qsOptions = {
   arrayFormat: "repeat",
@@ -54,7 +54,7 @@ class ApiService {
    */
   init() {
     const restApiPrefix = import.meta.env.VITE_REST_API_PREFIX;
-    let apiBaseUrl = import.meta.env.VITE_API_DOMAIN;
+    const apiBaseUrl = import.meta.env.VITE_API_DOMAIN;
 
     axios.defaults.baseURL = apiBaseUrl + restApiPrefix;
 
@@ -154,7 +154,7 @@ class ApiService {
     );
 
     $axios.interceptors.request.use(async (request) => {
-      const accessToken = await auth0.getAccessTokenSilently();
+      const accessToken = ""; // your access token
 
       request.headers.Authorization = `Bearer ${accessToken}`;
       request.url = this.urlQueryToSnakeCase(request.url);
@@ -176,10 +176,14 @@ class ApiService {
     if (Array.isArray(response?.data)) {
       return [{ description: response?.data.join(", ") }];
     } else {
-      return Object.entries(response?.data || {}).map(([label, description]) => ({
-        label: label[0].toUpperCase() + label.slice(1),
-        description: Array.isArray(description) ? description.join(", ") : description,
-      }));
+      return Object.entries(response?.data || {}).map(
+        ([label, description]) => ({
+          label: label[0].toUpperCase() + label.slice(1),
+          description: Array.isArray(description)
+            ? description.join(", ")
+            : description,
+        }),
+      );
     }
   }
 
@@ -188,11 +192,15 @@ class ApiService {
    * @param { String } message
    * @param { Boolean } withDelay
    */
-  // TODO: Decide how to handle success (it's not implemented on API side yet).
   showSuccessNotify(message, withDelay) {
-    withDelay
-      ? setDelayedNotify({ type: "success", description: message })
-      : notifySuccess({ description: message });
+    if (withDelay) {
+      setDelayedNotify({
+        type: "success" as NotificationType,
+        description: message,
+      });
+    } else {
+      notifySuccess({ description: message });
+    }
   }
 
   /**
@@ -245,8 +253,15 @@ class ApiService {
    */
   get(resource, settings = {}) {
     const abortController = new AbortController();
-    const config = this.getRequestConfig({ ...settings, signal: abortController.signal });
-    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
+    const config = this.getRequestConfig({
+      ...settings,
+      signal: abortController.signal,
+    });
+    const {
+      withLoader = true,
+      withNotify = false,
+      delaySuccessNotify = false,
+    } = settings;
 
     this.cancelPendingRequestsByResource(resource, "GET");
 
@@ -278,7 +293,11 @@ class ApiService {
    */
   post(resource, params = null, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
+    const {
+      withLoader = true,
+      withNotify = false,
+      delaySuccessNotify = false,
+    } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
@@ -304,7 +323,11 @@ class ApiService {
    */
   put(resource, params = null, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
+    const {
+      withLoader = true,
+      withNotify = false,
+      delaySuccessNotify = false,
+    } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
@@ -330,7 +353,11 @@ class ApiService {
    */
   patch(resource, params = null, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
+    const {
+      withLoader = true,
+      withNotify = false,
+      delaySuccessNotify = false,
+    } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
@@ -355,7 +382,11 @@ class ApiService {
    */
   delete(resource, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
+    const {
+      withLoader = true,
+      withNotify = false,
+      delaySuccessNotify = false,
+    } = settings;
 
     if (withLoader) {
       this.loader("on", resource);

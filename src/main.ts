@@ -2,9 +2,8 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { createVueless, createVueI18nAdapter } from "vueless";
 
-import ApiService from "./utils/apiUtils";
-import i18nService, { i18nInstance } from "./utils/i18nUtils";
-import { auth0 } from "./utils/auth0Util";
+import ApiService from "./utils/api";
+import i18nService, { i18nInstance } from "./utils/i18n";
 
 import App from "./App.vue";
 import router from "./router";
@@ -29,7 +28,6 @@ function appInit() {
   const pinia = createPinia();
 
   app.use(router);
-  app.use(auth0);
   app.use(i18nInstance);
   app.use(vueless);
   app.use(pinia);

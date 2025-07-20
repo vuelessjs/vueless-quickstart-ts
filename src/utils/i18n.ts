@@ -89,13 +89,15 @@ class I18nService {
 
     const fallbackLang = this._fallbackLocale;
     const fallbackMessages = this.#moduleMessages[fallbackLang]
-      ? merge(this.#moduleMessages[fallbackLang][module], this.#globalMessages[fallbackLang])
+      ? merge(
+          this.#moduleMessages[fallbackLang][module],
+          this.#globalMessages[fallbackLang],
+        )
       : this.#globalMessages[fallbackLang];
 
     const diffKeys = this.compareKeys(messages, fallbackMessages);
     const message = `There are keys difference between "${fallbackLang}" and "${lang}" locales:`;
 
-    // eslint-disable-next-line no-console
     if (diffKeys.length) console.warn(message, diffKeys);
 
     sessionStorage.setItem("localeKeysDiff", "true");
@@ -113,7 +115,10 @@ class I18nService {
 
       if (!(key in obj1) || !(key in obj2)) {
         diffPaths.push(newPath);
-      } else if (typeof obj1[key] === "object" && typeof obj2[key] === "object") {
+      } else if (
+        typeof obj1[key] === "object" &&
+        typeof obj2[key] === "object"
+      ) {
         const nestedDiffs = this.compareKeys(obj1[key], obj2[key], newPath);
 
         diffPaths = diffPaths.concat(nestedDiffs);
@@ -123,8 +128,7 @@ class I18nService {
     return diffPaths;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  missing(locale, key) {
+  missing() {
     // Handle issues here by Honeybadger.io or similar error tracking app.
   }
 
@@ -156,7 +160,11 @@ class I18nService {
    */
   getTranslation(localPath, params = {}) {
     const { t, tm } = useI18n({ useScope: "local" });
-    const { t: tGlobal, tm: tmGlobal, te: teGlobal } = useI18n({ useScope: "global" });
+    const {
+      t: tGlobal,
+      tm: tmGlobal,
+      te: teGlobal,
+    } = useI18n({ useScope: "global" });
 
     const componentName = getCurrentInstance().type.name;
     const globalPath = `${componentName}.${localPath}`;

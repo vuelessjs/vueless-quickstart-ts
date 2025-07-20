@@ -1,5 +1,5 @@
 <template>
-  <header>Hello World!</header>
+  <UHeader :label="$t('title.yourVuelessApp')" />
 </template>
 
 <script setup lang="ts"></script>

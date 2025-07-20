@@ -4,6 +4,7 @@ import fs from "node:fs";
 
 /* Vite plugins */
 import Vue from "@vitejs/plugin-vue";
+import Yaml from "@modyfi/vite-plugin-yaml";
 import Eslint from "vite-plugin-eslint";
 import VueI18n from "@intlify/unplugin-vue-i18n/vite";
 import { visualizer as BuildVisualizer } from "rollup-plugin-visualizer";
@@ -38,6 +39,7 @@ export default ({ mode }) => {
   return defineConfig({
     plugins: [
       Vue(),
+      Yaml(),
       Eslint({
         failOnError: isProd,
         failOnWarning: isProd,
