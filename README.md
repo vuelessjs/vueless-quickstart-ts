@@ -97,8 +97,6 @@ cp .env.example .env
 # replace env variables
 sed -i "s|{{DOMAIN}}|$FE_URL|g" .env                    # set VITE_DOMAIN
 sed -i "s|{{API_DOMAIN}}|$API_URL|g" .env               # set VITE_API_DOMAIN
-sed -i "s|{{AUTH0_DOMAIN}}|$AUTH0_DOMAIN|g" .env        # set VITE_AUTH0_DOMAIN
-sed -i "s|{{AUTH0_CLIENT_ID}}|$AUTH0_CLIENT_ID|g" .env  # set VITE_AUTH0_CLIENT_ID
 
 # build the project
 pnpm build
