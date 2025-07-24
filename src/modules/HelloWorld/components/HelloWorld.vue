@@ -3,7 +3,7 @@
     justify="center"
     align="center"
     block
-    class="bg-default relative lg:min-h-screen"
+    class="bg-default lg:min-h-screen"
   >
     <UCol align="center" gap="xl" class="lg:py-8">
       <UBadge

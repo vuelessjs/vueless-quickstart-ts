@@ -1,6 +1,6 @@
-import { components } from "./.vueless";
+import { componentConfigs } from "./.vueless";
 
 export default {
   colorMode: "dark",
-  components,
+  components: componentConfigs,
 };

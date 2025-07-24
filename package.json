@@ -27,7 +27,7 @@
     "vue": "^3.5.17",
     "vue-i18n": "^11.1.10",
     "vue-router": "^4.5.1",
-    "vueless": "1.0.2-beta.53"
+    "vueless": "^1.0.2-beta.60"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
