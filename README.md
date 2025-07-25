@@ -1,10 +1,12 @@
-# How to Run the Application Locally
+# Vueless Quickstart
 
-## 1. Install Node.js
+## How to Run the Application Locally
+
+### 1. Install Node.js
 
 Install **Node.js v22.xx** (refer to the [official instructions](https://nodejs.org/en/download/package-manager/) for your operating system).
 
-## 2. Clone the Repository
+### 2. Clone the Repository
 
 Create a directory and clone the application files from the remote Git repository:
 
@@ -16,7 +18,7 @@ git clone git@github.com:vuelessjs/vueless-quickstart.git
 cd <application_name>
 ```
 
-## 3. Install Dependencies
+### 3. Install Dependencies
 
 Install all required Node modules:
 
@@ -24,7 +26,7 @@ Install all required Node modules:
 npm install
 ```
 
-## 4. Setup Environment Variables
+### 4. Setup Environment Variables
 
 Create a local environment configuration file:
 
@@ -32,15 +34,13 @@ Create a local environment configuration file:
 cp .env.local.example .env.local
 ```
 
-## 5. Run the Application (Development Mode)
+### 5. Run the Application (Development Mode)
 
 Start the application in development mode:
 
 ```bash
 npm run dev
 ```
-
-# Additional Commands
 
 ## Run Storybook (UI Component Explorer)
 
