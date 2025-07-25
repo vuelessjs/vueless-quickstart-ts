@@ -1,101 +1,118 @@
-## How to run the project locally
+# How to Run the Application Locally
 
-- Install **node.js 22.XX** version (see [instructions](https://nodejs.org/en/download/package-manager/) for your OS).
+## 1. Install Node.js
 
-- Create project folder and clone files from Git into:
+Install **Node.js v22.xx** (refer to the [official instructions](https://nodejs.org/en/download/package-manager/) for your operating system).
+
+## 2. Clone the Repository
+
+Create a directory and clone the application files from the remote Git repository:
 
 ```bash
-# download project from remote repository
-git clone origin git@github.com:vuelessjs/vueless-quickstart.git
+# Clone the repository
+git clone git@github.com:vuelessjs/vueless-quickstart.git
 
-# go to project folder
-cd <project_name>
+# Navigate to the application directory
+cd <application_name>
 ```
 
-- Install project dependencies (node_modules):
+## 3. Install Dependencies
+
+Install all required Node modules:
 
 ```bash
 npm install
 ```
 
-- Create environment file:
+## 4. Setup Environment Variables
+
+Create a local environment configuration file:
 
 ```bash
-#  for local environment
 cp .env.local.example .env.local
 ```
 
-- Run the app in **development** mode:
+## 5. Run the Application (Development Mode)
+
+Start the application in development mode:
 
 ```bash
-npm dev
+npm run dev
 ```
 
-- The project is ready!
+# Additional Commands
 
-## Additional commands
+## Run Storybook (UI Component Explorer)
 
-- Open Storybook (frontend base UI components documentation):
+Useful for viewing and debugging UI components:
 
 ```bash
-# run Storybook in development mode (with docs and stories):
-# It's good for debugging components.
-npm sb:dev-full
+# Start Storybook with documentation and stories
+npm run sb:dev-full
 
-# run Storybook in development mode (with docs only):
-npm sb:dev
+# Start Storybook with documentation only
+npm run sb:dev
 
-# build Storybook (to publish in the web):
-npm sb:build
+# Build Storybook for deployment
+npm run sb:build
 
-# Run the built storybook application (`/storybook-static` folder) in production mode:
-npm sb:preview
+# Preview the built Storybook app
+npm run sb:preview
 ```
 
-- Run code-style check / formatting:
+## Code Style and Formatting
+
+Run linting checks to maintain code quality:
 
 ```bash
-# check code style (only show errors)
-npm lint
+# Show style errors and warnings
+npm run lint
 
-# check code style and fix all possible errors
-npm lint:fix
+# Automatically fix style issues
+npm run lint:fix
 
-# check code style of given file paths (fail pipeline if at least 1 error or warning appears)
-npm lint:ci
+# Lint specific files (fail on any warning or error)
+npm run lint:ci
 ```
 
-- Run auto tests:
+## Unit Tests
+
+Run automated unit tests:
 
 ```bash
-# start unit tests
-npm test:unit
+npm run test:unit
 ```
 
-- Build application:
+## Build the application
+
+Prepare the app for production:
 
 ```bash
-# create env file
+# Create the production environment file
 cp .env.example .env
 
-# replace env variables
-sed -i "s|{{DOMAIN}}|$FE_URL|g" .env                    # set VITE_DOMAIN
-sed -i "s|{{API_DOMAIN}}|$API_URL|g" .env               # set VITE_API_DOMAIN
+# Replace environment placeholders with actual values
+sed -i "s|{{DOMAIN}}|$FE_URL|g" .env              # Set VITE_DOMAIN
+sed -i "s|{{API_DOMAIN}}|$API_URL|g" .env         # Set VITE_API_DOMAIN
 
-# build the project
-npm build
+# Build the app
+npm run build
 
-# copy all files from `dist` folder to the deploy folder
+# Copy the built files to the deployment directory
 cp -r dist/. $DEPLOY_PATH
 ```
 
-- Run the built application from a `/dist` folder in **production mode**:
+## Run the Built Application (Production Mode)
+
+Start the built app from the /dist directory:
 
 ```bash
-npm preview
+npm run preview
 ```
 
-- Update browserslist DB to the latest version:
+## Update Browserslist Database
+
+Keep the Browserslist DB up-to-date:
 
 ```bash
 npx browserslist@latest --update-db
