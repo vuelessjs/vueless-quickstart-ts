@@ -1,46 +1,61 @@
-import js from '@eslint/js'
-import vue from 'eslint-plugin-vue'
-import typescript from '@vue/eslint-config-typescript'
-import prettier from '@vue/eslint-config-prettier'
-import globals from 'globals'
+import js from "@eslint/js";
+import vue from "eslint-plugin-vue";
+import typescript from "@typescript-eslint/eslint-plugin";
+import typescriptParser from "@typescript-eslint/parser";
+import prettier from "@vue/eslint-config-prettier";
+import globals from "globals";
 
 export default [
   js.configs.recommended,
-  ...vue.configs['flat/recommended'],
-  ...typescript(),
-  prettier,
+  ...vue.configs["flat/recommended"],
   {
-    files: ['**/*.{js,ts,vue}'],
+    files: ["**/*.{js,ts}"],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+      ecmaVersion: "latest",
+      sourceType: "module",
+      parser: typescriptParser,
       globals: {
         ...globals.browser,
         ...globals.node,
       },
     },
+    plugins: {
+      "@typescript-eslint": typescript,
+    },
     rules: {
-      // Add your custom rules here
-      'vue/multi-word-component-names': 'off',
-      'vue/no-unused-vars': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
+      ...typescript.configs.recommended.rules,
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
   {
-    files: ['**/*.vue'],
+    files: ["**/*.vue"],
     languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
       parserOptions: {
-        parser: '@typescript-eslint/parser',
+        parser: typescriptParser,
+        extraFileExtensions: [".vue"],
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
+    plugins: {
+      "@typescript-eslint": typescript,
+    },
+    rules: {
+      // Vue-specific rules
+      "vue/multi-word-component-names": "off",
+      "vue/no-unused-vars": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+    },
   },
+  prettier,
   {
-    ignores: [
-      'dist/**',
-      'node_modules/**',
-      'storybook-static/**',
-      '*.config.js',
-      '*.config.ts',
-    ],
+    ignores: ["dist/**", "node_modules/**", "storybook-static/**"],
   },
-]
+];

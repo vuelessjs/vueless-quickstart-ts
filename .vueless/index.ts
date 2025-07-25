@@ -8,4 +8,9 @@
  * Only files following the naming pattern "U[Component].config.[ts|js]" will be included.
  * Example: "UButton.config.ts"
  */
-export const componentConfigs = {};
+
+import UButton from "./UButton.config.ts";
+
+export const componentConfigs = {
+  UButton,
+};

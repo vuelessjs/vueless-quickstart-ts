@@ -10,21 +10,6 @@ import VueI18n from "@intlify/unplugin-vue-i18n/vite";
 import { visualizer as BuildVisualizer } from "rollup-plugin-visualizer";
 import { Vueless, UnpluginComponents, TailwindCSS } from "vueless/plugin-vite";
 
-// Inline plugin configurations
-const vueI18Config = {
-  defaultSFCLang: "yaml",
-  strictMessage: false,
-  runtimeOnly: false,
-};
-
-const buildVisualizerConfig = {
-  template: "treemap",
-  gzipSize: true,
-  brotliSize: true,
-  filename: "report.html",
-  emitFile: false,
-};
-
 /* Vite config */
 export default ({ mode }) => {
   // Load environment variables
@@ -47,61 +32,39 @@ export default ({ mode }) => {
       TailwindCSS(),
       Vueless(),
       UnpluginComponents(),
-      VueI18n(vueI18Config),
+      VueI18n({
+        defaultSFCLang: "yaml",
+        strictMessage: false,
+        runtimeOnly: false,
+      }),
 
-      // Build visualization (dev/build analysis)
-      BuildVisualizer(buildVisualizerConfig),
-    ].filter(Boolean),
-
-    server: {
-      port: parseInt(process.env.VITE_DEV_PORT) || 4100,
-      host: process.env.VITE_DEV_HOST || "localhost",
-      open: process.env.VITE_AUTO_OPEN === "true",
-    },
-
-    preview: {
-      port: parseInt(process.env.VITE_PREVIEW_PORT) || 4200,
-    },
-
+      BuildVisualizer({
+        template: "treemap",
+        gzipSize: true,
+        brotliSize: true,
+        filename: "report.html",
+        emitFile: false,
+      }),
+    ],
     resolve: {
-      extensions: [".vue", ".js", ".ts", ".jsx", ".tsx"],
       alias: {
         "@": path.resolve(__dirname, "./src"),
         "~": path.resolve(__dirname, "."),
         ...getModuleAliases(),
       },
     },
-
     build: {
-      sourcemap: isDev || process.env.VITE_BUILD_SOURCEMAP === "true",
+      sourcemap: false,
       outDir: path.resolve(__dirname, process.env.VITE_OUTPUT_DIR || "dist"),
-
-      // Minification
-      minify: isProd ? "terser" : false,
-
-      // Chunk size warning limit
-      chunkSizeWarningLimit: 1000,
     },
-
-    // Dependency optimization
     optimizeDeps: {
       include: [
         "vue",
         "vue-router",
         "pinia",
-        "date-fns",
-        "date-fns-tz",
-        "date-fns/locale",
         "@vuelidate/core",
         "@vuelidate/validators",
       ],
-    },
-
-    // Define global constants
-    define: {
-      __VUE_OPTIONS_API__: true,
-      __VUE_PROD_DEVTOOLS__: false,
-      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     },
   });
 };
