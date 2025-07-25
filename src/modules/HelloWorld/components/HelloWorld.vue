@@ -43,7 +43,7 @@
         size="lg"
         variant="lifted"
         weight="medium"
-        class="max-w-[400px]"
+        class="whitespace-break-spaces"
       />
     </UCol>
 
