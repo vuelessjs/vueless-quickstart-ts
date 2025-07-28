@@ -1,7 +1,7 @@
 <template>
-  <HelloWorld />
+  <ULoaderOverlay />
+
+  <router-view />
 </template>
 
-<script setup lang="ts">
-import HelloWorld from "./modules/HelloWorld/components/HelloWorld.vue";
-</script>
+<script setup lang="ts"></script>

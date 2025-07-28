@@ -1,2 +1,16 @@
 title:
-  yourVuelessApp: Start working on your Vueless App! ;)
+  vueless: Vueless UI
+  yourVuelessApp: Create your Design System in Days, not Weeks. Everything You Need for Your Next Vue or Nuxt App.
+
+label:
+  docs: Docs
+  components: Components
+  star: Give us a star
+
+description:
+  docs: Comprehensive guides, API, and usage examples.
+  components: Browse and interact with all available components.
+  star: Support us and help others discover Vueless.
+
+badge:
+  releaseText: Vueless UI {version} is out! 🚀

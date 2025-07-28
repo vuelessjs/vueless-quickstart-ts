@@ -1,9 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import mainLayout from "./layouts/mainLayout";
+import welcomePageRoutes from "../modules/WelcomePage/routes";
 
 import beforeEachMiddleware from "./middlewares/beforeEach.middleware";
 import afterEachMiddleware from "./middlewares/afterEach.middleware";
+
+mainLayout.children = welcomePageRoutes;
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_BASE_PATH),

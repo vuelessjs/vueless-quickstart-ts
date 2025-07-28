@@ -71,7 +71,7 @@ npm run lint
 # Automatically fix style issues
 npm run lint:fix
 
-# Lint specific files (fail on any warning or error)
+# Run linter in CI mode (fails on warnings and errors)
 npm run lint:ci
 ```
 
@@ -104,7 +104,7 @@ cp -r dist/. $DEPLOY_PATH
 
 ## Run the Built Application (Production Mode)
 
-Start the built app from the /dist directory:
+Start the built app from the `/dist` directory:
 
 ```bash
 npm run preview
@@ -112,7 +112,7 @@ npm run preview
 
 ## Update Browserslist Database
 
-Keep the Browserslist DB up-to-date:
+Keep the [Browserslist DB](https://browsersl.ist/) up-to-date:
 
 ```bash
 npx browserslist@latest --update-db

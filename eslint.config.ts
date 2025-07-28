@@ -24,7 +24,6 @@ export default [
     },
     rules: {
       ...typescript.configs.recommended.rules,
-      "@typescript-eslint/no-unused-vars": "off",
     },
   },
   {

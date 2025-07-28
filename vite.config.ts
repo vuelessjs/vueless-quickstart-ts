@@ -18,17 +18,11 @@ export default ({ mode }) => {
     ...loadEnv(mode, process.cwd()),
   };
 
-  const isDev = mode === "development";
-  const isProd = mode === "production";
-
   return defineConfig({
     plugins: [
       Vue(),
       Yaml(),
-      Eslint({
-        failOnError: isProd,
-        failOnWarning: isProd,
-      }),
+      Eslint(),
       TailwindCSS(),
       Vueless(),
       UnpluginComponents(),
@@ -37,7 +31,6 @@ export default ({ mode }) => {
         strictMessage: false,
         runtimeOnly: false,
       }),
-
       BuildVisualizer({
         template: "treemap",
         gzipSize: true,
@@ -49,22 +42,12 @@ export default ({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
-        "~": path.resolve(__dirname, "."),
         ...getModuleAliases(),
       },
     },
     build: {
       sourcemap: false,
       outDir: path.resolve(__dirname, process.env.VITE_OUTPUT_DIR || "dist"),
-    },
-    optimizeDeps: {
-      include: [
-        "vue",
-        "vue-router",
-        "pinia",
-        "@vuelidate/core",
-        "@vuelidate/validators",
-      ],
     },
   });
 };

@@ -2,9 +2,8 @@
   "include": [
     "src/**/*",
     "src/**/*.vue",
-    "test/**/*"
   ],
-  "exclude": ["src/**/__tests__/*", "dist/**/*"],
+  "exclude": ["dist/**/*"],
   "compilerOptions": {
     /* General */
     "module": "ESNext",
@@ -33,7 +32,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
 
-    /* JS file support. Temporarily enabled, will be removed soon */
+    /* JS file support. */
     "allowJs": true
   }
 }

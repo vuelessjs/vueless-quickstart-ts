@@ -12,9 +12,9 @@
         color="neutral"
         round
         class="font-semibold py-1.5 text-small md:text-medium"
-        :class="!vuelessPackage && 'animate-pulse'"
+        :class="!version && 'animate-pulse'"
       >
-        Vueless UI {{ vuelessPackage || "1.X.X" }} is out! 🚀
+        {{ $t("badge.releaseText", { version: version || "1.X.X" }) }}
       </UBadge>
 
       <URow align="center" gap="none" class="relative">
@@ -35,10 +35,7 @@
       </URow>
 
       <UText
-        label="
-          Create your Design System in Days, not Weeks.
-          Everything You Need for Your Next Vue or Nuxt App.
-        "
+        :label="$t('title.yourVuelessApp')"
         align="center"
         size="lg"
         variant="lifted"
@@ -55,7 +52,7 @@
           <UCol>
             <UChip icon="arrow_outward" size="sm">
               <ULink
-                label="Docs"
+                :label="$t('label.docs')"
                 size="lg"
                 href="https://docs.vueless.com/"
                 target="blank"
@@ -63,10 +60,7 @@
               />
             </UChip>
 
-            <UText
-              label="Comprehensive guides, API, and usage examples."
-              variant="lifted"
-            />
+            <UText :label="$t('description.docs')" variant="lifted" />
           </UCol>
         </URow>
       </UCard>
@@ -78,7 +72,7 @@
           <UCol>
             <UChip icon="arrow_outward" size="sm">
               <ULink
-                label="Components"
+                :label="$t('label.components')"
                 size="lg"
                 href="https://ui.vueless.com"
                 target="blank"
@@ -86,10 +80,7 @@
               />
             </UChip>
 
-            <UText
-              label="Browse and interact with all available components."
-              variant="lifted"
-            />
+            <UText :label="$t('description.components')" variant="lifted" />
           </UCol>
         </URow>
       </UCard>
@@ -101,7 +92,7 @@
           <UCol>
             <UChip icon="arrow_outward" size="sm">
               <ULink
-                label="Give us a star"
+                :label="$t('label.star')"
                 size="lg"
                 href="https://github.com/vuelessjs/vueless"
                 target="blank"
@@ -109,10 +100,7 @@
               />
             </UChip>
 
-            <UText
-              label="Support us and help others discover Vueless."
-              variant="lifted"
-            />
+            <UText :label="$t('description.star')" variant="lifted" />
           </UCol>
         </URow>
       </UCard>
@@ -121,16 +109,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+
+import { useWelcomePageStore } from "../store";
 
 import VuelessOuter from "../../../assets/images/vueless-logo-outer.svg?component";
 import VuelessInner from "../../../assets/images/vueless-logo-inner.svg?component";
 
-const vuelessPackage = ref<string | null>(null);
+const welcomePageStore = useWelcomePageStore();
+
+const { version } = storeToRefs(welcomePageStore);
 
 onMounted(async () => {
-  const response = await fetch("https://registry.npmjs.org/vueless/latest");
-  const data = await response.json();
-  vuelessPackage.value = data.version;
+  await welcomePageStore.getVuelessVersion();
 });
 </script>
