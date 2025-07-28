@@ -10,7 +10,6 @@
     "lint": "eslint --ext .vue,.js,.ts --no-fix --ignore-path .eslintignore src/ .storybook/",
     "lint:fix": "eslint --ext .vue,.js,.ts --fix --ignore-path .eslintignore src/ .storybook/",
     "lint:ci": "eslint --ext .vue,.js,.ts --no-fix --ignore-path .eslintignore --max-warnings=0",
-    "sb:dev-full": "STORYBOOK_FULL=1 storybook dev -p 6006 --no-open",
     "sb:dev": "storybook dev -p 6006 --no-open",
     "sb:build": "storybook build --docs",
     "sb:preview": "vite preview --host --outDir=storybook-static",
