@@ -1,6 +1,6 @@
 import { setup } from "@storybook/vue3-vite";
 
-import { getRandomId } from "../src";
+import { getRandomId } from "vueless";
 
 import themeLight from "./themes/themeLight.js";
 import themeDark from "./themes/themeDark.js";
@@ -13,7 +13,7 @@ import { vue3SourceDecorator } from "./decorators/vue3SourceDecorator.js";
 import "./index.css";
 
 /* Vue plugins */
-import { createVueless } from "../src/index";
+import { createVueless } from "vueless";
 import { createRouter, createWebHistory } from "vue-router";
 
 const vueless = createVueless();
