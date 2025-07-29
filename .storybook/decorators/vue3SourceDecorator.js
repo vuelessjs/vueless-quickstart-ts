@@ -52,7 +52,8 @@ export const vue3SourceDecorator = makeDecorator({
         watch(
           context.args,
           async (newArgs) => {
-            if (JSON.stringify(previousArgs) === JSON.stringify(newArgs)) return;
+            if (JSON.stringify(previousArgs) === JSON.stringify(newArgs))
+              return;
 
             previousArgs = { ...newArgs };
             updateArgs({ ...context.args });
@@ -64,7 +65,10 @@ export const vue3SourceDecorator = makeDecorator({
 
         async function setSourceCode() {
           try {
-            const src = context.originalStoryFn(context.args, context.argTypes).template;
+            const src = context.originalStoryFn(
+              context.args,
+              context.argTypes,
+            ).template;
             const code = preFormat(src, context.args, context.argTypes);
 
             const emitFormattedTemplate = async () => {
@@ -87,12 +91,12 @@ export const vue3SourceDecorator = makeDecorator({
 
             await emitFormattedTemplate();
           } catch (e) {
-            // eslint-disable-next-line no-console
             console.warn("Failed to render code", e);
           }
         }
 
-        const storyClasses = context.parameters?.storyClasses || "px-6 pt-8 pb-12";
+        const storyClasses =
+          context.parameters?.storyClasses || "px-6 pt-8 pb-12";
 
         return () => h("div", { class: storyClasses }, [h(story)]);
       },
@@ -112,7 +116,11 @@ function preFormat(templateSource, args, argTypes) {
   templateSource = expandVueLoopFromTemplate(templateSource, args, argTypes);
 
   if (args?.outerEnum) {
-    templateSource = expandOuterVueLoopFromTemplate(templateSource, args, argTypes);
+    templateSource = expandOuterVueLoopFromTemplate(
+      templateSource,
+      args,
+      argTypes,
+    );
   }
 
   const componentArgs = {
@@ -137,13 +145,9 @@ function preFormat(templateSource, args, argTypes) {
     }
   }
 
-  const slotTemplateCodeBefore =
-    // eslint-disable-next-line vue/max-len
-    `<template v-for="(slot, index) of slots" :key="index" v-slot:[slot]><template v-if="slot === 'default' && !args['defaultSlot']">`;
+  const slotTemplateCodeBefore = `<template v-for="(slot, index) of slots" :key="index" v-slot:[slot]><template v-if="slot === 'default' && !args['defaultSlot']">`;
 
-  const slotTemplateCodeAfter =
-    // eslint-disable-next-line vue/max-len
-    `</template><template v-else-if="slot === 'default' && args['defaultSlot']">{{ args['defaultSlot'] }}</template><template v-else-if="args[slot + 'Slot']">{{ args[slot + 'Slot'] }}</template></template>`;
+  const slotTemplateCodeAfter = `</template><template v-else-if="slot === 'default' && args['defaultSlot']">{{ args['defaultSlot'] }}</template><template v-else-if="args[slot + 'Slot']">{{ args[slot + 'Slot'] }}</template></template>`;
 
   const modelValue = getModelValue(args["modelValue"]);
 
@@ -165,7 +169,9 @@ function preFormat(templateSource, args, argTypes) {
     .replace(
       /v-bind="args"/g,
       Object.keys(componentArgs)
-        .map((key) => " " + propToSource(kebabCase(key), args[key], argTypes[key]))
+        .map(
+          (key) => " " + propToSource(kebabCase(key), args[key], argTypes[key]),
+        )
         .join(""),
     )
     .replace(/:class="args\.wrapperClass"/g, `class="${args.wrapperClass}"`);
@@ -178,30 +184,38 @@ function postFormat(code) {
     code
       /* Add self-closing tag if there is no content inside */
       .replace(/<(\w+)([^>]*)><\/\1>/g, (_, tag, attrs) => {
-        const hasText = attrs.trim().includes("\n") ? false : attrs.trim().length > 0;
+        const hasText = attrs.trim().includes("\n")
+          ? false
+          : attrs.trim().length > 0;
         const space = hasText ? " " : "";
 
         return `<${tag}${attrs}${space}/>`;
       })
       /* Format objects in props */
-      .replace(/^(\s*):([\w-]+)="\[(\{.*?\})\]"/gm, (_, indent, propName, content) => {
-        const formatted = content
-          .split(/\},\s*\{/)
-          .map((obj, i, arr) => {
-            if (i === 0) obj += "}";
-            else if (i === arr.length - 1) obj = "{" + obj;
-            else obj = "{" + obj + "}";
+      .replace(
+        /^(\s*):([\w-]+)="\[(\{.*?\})\]"/gm,
+        (_, indent, propName, content) => {
+          const formatted = content
+            .split(/\},\s*\{/)
+            .map((obj, i, arr) => {
+              if (i === 0) obj += "}";
+              else if (i === arr.length - 1) obj = "{" + obj;
+              else obj = "{" + obj + "}";
 
-            return `${indent}  ${obj}`;
-          })
-          .join(",\n");
+              return `${indent}  ${obj}`;
+            })
+            .join(",\n");
 
-        return `${indent}:${propName}="[\n${formatted}\n${indent}]"`;
-      })
+          return `${indent}:${propName}="[\n${formatted}\n${indent}]"`;
+        },
+      )
       /* Added a new line between nested elements with closing tags */
-      .replace(/(<\/[\w-]+>)\n(\s*)(<[\w-][^>]*?>)/g, (match, closeTag, indent, openTag) => {
-        return `${closeTag}\n\n${indent}${openTag}`;
-      })
+      .replace(
+        /(<\/[\w-]+>)\n(\s*)(<[\w-][^>]*?>)/g,
+        (match, closeTag, indent, openTag) => {
+          return `${closeTag}\n\n${indent}${openTag}`;
+        },
+      )
       /* Added a new line between nested elements with self-closing tags */
       .replace(/(\/>\n)(?=\s*<\w[\s\S]*?\n\s*\/>)/g, "$1\n")
   );
@@ -237,7 +251,6 @@ function expandOuterVueLoopFromTemplate(template, args, argTypes) {
 
 function expandVueLoopFromTemplate(template, args, argTypes) {
   return template.replace(
-    // eslint-disable-next-line vue/max-len
     /<(\w+)([^>]*)\s+v-for="option\s+in\s+argTypes\?\.\[args\.enum]\?\.options"([^>]*?)>([\s\S]*?)<\/\1\s*>|<(\w+)([^>]*)\s+v-for="option\s+in\s+argTypes\?\.\[args\.enum]\?\.options"([^>]*)\/?>/g,
     (
       match,
@@ -267,7 +280,6 @@ function expandVueLoopFromTemplate(template, args, argTypes) {
         argTypes?.[args.enum]?.options
           ?.map(
             (option) =>
-              // eslint-disable-next-line vue/max-len
               `<${componentName} ${generateEnumAttributes(args, option)} ${restProps}>${slotContent}</${componentName}>`,
           )
           ?.join("\n") || ""
@@ -364,7 +376,9 @@ function parseKeyValuePairs(input) {
 // Set nested values like objects or arrays
 function setNestedValue(obj, path, value) {
   const arrayItems = path.match(/\w+|\[\d+\]/g) || [];
-  const keys = arrayItems.map((key) => (key.startsWith("[") ? Number(key.slice(1, -1)) : key));
+  const keys = arrayItems.map((key) =>
+    key.startsWith("[") ? Number(key.slice(1, -1)) : key,
+  );
   const lastKeyIndex = keys.length - 1;
 
   let current = obj;
