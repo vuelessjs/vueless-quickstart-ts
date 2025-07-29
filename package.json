@@ -11,9 +11,9 @@
     "lint:fix": "eslint --ext .vue,.js,.ts --fix --ignore-path .eslintignore src/ .storybook/",
     "lint:ci": "eslint --ext .vue,.js,.ts --no-fix --ignore-path .eslintignore --max-warnings=0",
     "sb:dev": "storybook dev -p 6006 --no-open",
+    "sb:dev:docs": "storybook dev -p 6006 --docs --no-open",
     "sb:build": "storybook build --docs",
-    "sb:preview": "vite preview --host --outDir=storybook-static",
-    "sb:dev:docs": "storybook dev -p 6006 --docs --no-open"
+    "sb:preview": "vite preview --host --outDir=storybook-static"
   },
   "dependencies": {
     "@intlify/unplugin-vue-i18n": "^6.0.8",
