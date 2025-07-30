@@ -1,7 +1,9 @@
 import { getDelayedNotify, loaderOverlayOff, setTitle } from "vueless";
 import { i18n, getActiveLanguage } from "@/utils/i18n.ts";
+import type { RouteLocation } from "vue-router";
 
-export default async (to) => {
+export default async (to: RouteLocation) => {
+  // Check are locale keys in the right order in all files.
   if (import.meta.env.DEV) {
     const { validateModuleLocaleMassages } = await import("@/utils/localeValidation.ts");
 
