@@ -1,11 +1,15 @@
 import { createI18n } from "vue-i18n";
 
+import type { I18n } from "vue-i18n";
+import type { Ref } from "vue";
+
 import en from "@/i18n/en.yaml";
 
 export const FALLBACK_LOCALE = "en";
 export const LOCALE_KEY = "language";
 
-export const i18nInstance = createI18n({
+export const i18nInstance: I18n = createI18n({
+  legacy: false,
   messages: {
     en,
   },
@@ -60,7 +64,7 @@ function pluralizationRules(value: number, plurals: number) {
  * Save the active language to the localStorage.
  */
 export function setActiveLanguage(lang: string) {
-  i18nInstance.global.locale.value = lang;
+  (i18nInstance.global.locale as Ref).value = lang;
   localStorage.setItem(LOCALE_KEY, lang);
 
   window.location.reload();
