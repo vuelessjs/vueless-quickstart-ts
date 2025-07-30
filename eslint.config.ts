@@ -54,6 +54,7 @@ export default defineConfigWithVueTs(
       "prettier/prettier": ["warn", { printWidth: 100 }],
       "vue/max-len": ["error", { code: 120, template: 960, ignoreComments: true, ignoreUrls: true }],
       "vue/max-attributes-per-line": ["error", { singleline: { max: 9 }, multiline: { max: 1 } }],
+      "vue/multi-word-component-names": "off",
     },
   },
   {
