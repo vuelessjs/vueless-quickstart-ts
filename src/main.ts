@@ -3,7 +3,7 @@ import { createPinia } from "pinia";
 import { createVueless, createVueI18nAdapter } from "vueless";
 
 import ApiService from "./utils/api";
-import i18nService, { i18nInstance } from "./utils/i18n";
+import { i18nInstance } from "./utils/i18n.ts";
 
 import App from "./App.vue";
 import router from "./router";
@@ -11,10 +11,8 @@ import router from "./router";
 import "/index.css";
 
 ApiService.init();
-i18nService.init().then(() => {
-  router.init().then(() => {
-    appInit();
-  });
+router.init().then(() => {
+  appInit();
 });
 
 function appInit() {

@@ -33,6 +33,11 @@
     "resolveJsonModule": true,
 
     /* JS file support. */
-    "allowJs": true
+    "allowJs": true,
+
+    /* Custom types. */
+    "types": [
+      "@modyfi/vite-plugin-yaml/modules"
+    ]
   }
 }
