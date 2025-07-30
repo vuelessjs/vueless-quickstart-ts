@@ -2,16 +2,19 @@ import { defineConfig, loadEnv } from "vite";
 import path from "node:path";
 import fs from "node:fs";
 
+import type { ConfigEnv } from "vite";
+import type { UnknownObject } from "vueless/types";
+
 /* Vite plugins */
 import Vue from "@vitejs/plugin-vue";
 import Yaml from "@modyfi/vite-plugin-yaml";
-import Eslint from "vite-plugin-eslint";
+import Eslint from "@nabla/vite-plugin-eslint";
 import VueI18n from "@intlify/unplugin-vue-i18n/vite";
 import { visualizer as BuildVisualizer } from "rollup-plugin-visualizer";
 import { Vueless, UnpluginComponents, TailwindCSS } from "vueless/plugin-vite";
 
 /* Vite config */
-export default ({ mode }) => {
+export default ({ mode }: ConfigEnv) => {
   // Load environment variables
   process.env = {
     ...process.env,
@@ -55,12 +58,11 @@ export default ({ mode }) => {
 /**
  * Generate vite aliases for modules.
  * Converts: `./src/modules/Payments` into `#Payments`.
- * @returns {object} Module aliases object
  */
 function getModuleAliases() {
   const srcDir = path.resolve(__dirname, "./src/modules");
 
-  // Check if modules directory exists
+  // Check if the modules directory exists
   if (!fs.existsSync(srcDir)) {
     return {};
   }
@@ -71,7 +73,7 @@ function getModuleAliases() {
     return fs.statSync(fullPath).isDirectory();
   });
 
-  return folders.reduce((acc, folderName) => {
+  return folders.reduce((acc: UnknownObject, folderName) => {
     acc[`#${folderName}`] = path.join(srcDir, folderName);
 
     return acc;
