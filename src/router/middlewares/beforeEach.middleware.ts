@@ -1,14 +1,13 @@
-import { useLoaderOverlay } from "vueless";
+import { loaderProgressOff } from "vueless";
+import ApiService from "@/utils/api.js";
 
 export default async (to, from, next) => {
-  // Toggle full screen rendering loader.
-  const { loaderOverlayOn, loaderOverlayOff } = useLoaderOverlay();
+  // stop top loader & cancel all pending requests
+  loaderProgressOff("any");
 
-  loaderOverlayOn();
-
-  setTimeout(() => {
-    loaderOverlayOff();
-  }, 500);
+  if (to.name !== from.name) {
+    ApiService.cancelPendingRequests();
+  }
 
   next();
 };

@@ -1,10 +1,7 @@
 export default [
   {
-    path: "",
+    path: "welcome",
     name: "WelcomePage",
     component: () => import("./views/Page.vue"),
-    meta: {
-      isMainLayout: true,
-    },
   },
 ];
