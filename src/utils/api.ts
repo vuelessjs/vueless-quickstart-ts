@@ -176,14 +176,10 @@ class ApiService {
     if (Array.isArray(response?.data)) {
       return [{ description: response?.data.join(", ") }];
     } else {
-      return Object.entries(response?.data || {}).map(
-        ([label, description]) => ({
-          label: label[0].toUpperCase() + label.slice(1),
-          description: Array.isArray(description)
-            ? description.join(", ")
-            : description,
-        }),
-      );
+      return Object.entries(response?.data || {}).map(([label, description]) => ({
+        label: label[0].toUpperCase() + label.slice(1),
+        description: Array.isArray(description) ? description.join(", ") : description,
+      }));
     }
   }
 
@@ -257,11 +253,7 @@ class ApiService {
       ...settings,
       signal: abortController.signal,
     });
-    const {
-      withLoader = true,
-      withNotify = false,
-      delaySuccessNotify = false,
-    } = settings;
+    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
     this.cancelPendingRequestsByResource(resource, "GET");
 
@@ -293,11 +285,7 @@ class ApiService {
    */
   post(resource, params = null, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const {
-      withLoader = true,
-      withNotify = false,
-      delaySuccessNotify = false,
-    } = settings;
+    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
@@ -323,11 +311,7 @@ class ApiService {
    */
   put(resource, params = null, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const {
-      withLoader = true,
-      withNotify = false,
-      delaySuccessNotify = false,
-    } = settings;
+    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
@@ -353,11 +337,7 @@ class ApiService {
    */
   patch(resource, params = null, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const {
-      withLoader = true,
-      withNotify = false,
-      delaySuccessNotify = false,
-    } = settings;
+    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
@@ -382,11 +362,7 @@ class ApiService {
    */
   delete(resource, settings = {}) {
     const config = this.getRequestConfig(settings);
-    const {
-      withLoader = true,
-      withNotify = false,
-      delaySuccessNotify = false,
-    } = settings;
+    const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
     if (withLoader) {
       this.loader("on", resource);
