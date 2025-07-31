@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@intlify/unplugin-vue-i18n": "^6.0.8",
-    "@nabla/vite-plugin-eslint": "^2.0.6",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "axios": "^1.10.0",
@@ -32,9 +31,9 @@
     "vueless": "^1.1.1-beta.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
     "@material-symbols/svg-500": "^0.33.0",
     "@modyfi/vite-plugin-yaml": "^1.1.1",
+    "@nabla/vite-plugin-eslint": "^2.0.6",
     "@tsconfig/node20": "^20.1.6",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^24.1.0",
