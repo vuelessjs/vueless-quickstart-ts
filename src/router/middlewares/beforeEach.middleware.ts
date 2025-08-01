@@ -1,5 +1,5 @@
 import { loaderProgressOff } from "vueless";
-import ApiService from "@/utils/api.js";
+import { http } from "@/utils/http.js";
 import type { RouteLocation, NavigationGuardNext } from "vue-router";
 
 export default async (to: RouteLocation, from: RouteLocation, next: NavigationGuardNext) => {
@@ -7,7 +7,7 @@ export default async (to: RouteLocation, from: RouteLocation, next: NavigationGu
   loaderProgressOff("any");
 
   if (to.name !== from.name) {
-    ApiService.cancelPendingRequests();
+    http.cancelPendingRequests();
   }
 
   next();

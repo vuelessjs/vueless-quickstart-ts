@@ -16,7 +16,6 @@ export const qsOptions = {
   encode: false,
 };
 
-// Module-level state
 const pendingRequests = new Map();
 
 /**
@@ -25,7 +24,7 @@ const pendingRequests = new Map();
  * @param {string} resource - Endpoint string.
  * @param {('GET'|'POST'|'PATCH'|'DELETE'|'PUT')} [method] - HTTP method.
  */
-export function cancelPendingRequestsByResource(resource, method) {
+function cancelPendingRequestsByResource(resource, method) {
   const resourceWithoutQuery = resource.split("?").at(0);
 
   const targetKeys = Array.from(pendingRequests.keys()).filter((key) => {
@@ -44,7 +43,7 @@ export function cancelPendingRequestsByResource(resource, method) {
   });
 }
 
-export function cancelPendingRequests() {
+function cancelPendingRequests() {
   Array.from(pendingRequests.values()).forEach((controller) => controller.abort());
   pendingRequests.clear();
 }
@@ -52,7 +51,7 @@ export function cancelPendingRequests() {
 /**
  * Inits axios
  */
-export function initApi() {
+function initApi() {
   const restApiPrefix = import.meta.env.VITE_REST_API_PREFIX;
   const apiBaseUrl = import.meta.env.VITE_API_DOMAIN;
 
@@ -67,7 +66,7 @@ export function initApi() {
  * @param {Object|Array} obj - The object or array to convert.
  * @returns {Object|Array} - The new object or array with camelCase keys.
  */
-export function keysToCamelCase(obj) {
+function keysToCamelCase(obj) {
   if (isArray(obj)) {
     return obj.map((v) => keysToCamelCase(v));
   } else if (isObject(obj)) {
@@ -89,7 +88,7 @@ export function keysToCamelCase(obj) {
  * @param {Object|Array} obj - The object or array to convert.
  * @returns {Object|Array} - The new object or array with snake_case keys.
  */
-export function keysToSnakeCase(obj) {
+function keysToSnakeCase(obj) {
   if (isArray(obj)) {
     return obj.map((v) => keysToSnakeCase(v));
   } else if (isObject(obj)) {
@@ -107,7 +106,7 @@ export function keysToSnakeCase(obj) {
   return obj;
 }
 
-export function urlQueryToSnakeCase(url) {
+function urlQueryToSnakeCase(url) {
   const [baseUrl, queries] = url.split("?");
 
   if (!queries) return url;
@@ -123,7 +122,7 @@ export function urlQueryToSnakeCase(url) {
  * Set axios interceptors
  * @param { Object } $axios
  */
-export function setAxiosInterceptors($axios) {
+function setAxiosInterceptors($axios) {
   $axios.interceptors.response.use(
     (response) => {
       loader("off", response.config?.url);
@@ -172,7 +171,7 @@ export function setAxiosInterceptors($axios) {
  * @param { Object } response
  * @returns String
  */
-export function getResponseMessage(response) {
+function getResponseMessage(response) {
   if (Array.isArray(response?.data)) {
     return [{ description: response?.data.join(", ") }];
   } else {
@@ -188,7 +187,7 @@ export function getResponseMessage(response) {
  * @param { String } message
  * @param { Boolean } withDelay
  */
-export function showSuccessNotify(message, withDelay) {
+function showSuccessNotify(message, withDelay) {
   if (withDelay) {
     setDelayedNotify({
       type: "success" as NotificationType,
@@ -204,7 +203,7 @@ export function showSuccessNotify(message, withDelay) {
  * @param { String } state
  * @param { String } resource
  */
-export function loader(state, resource) {
+function loader(state, resource) {
   // console.log(state, resource);
   if (state === "on") loaderProgressOn(resource);
   if (state === "off") loaderProgressOff(resource);
@@ -215,7 +214,7 @@ export function loader(state, resource) {
  * @param { Object } settings
  * @returns { Object }
  */
-export function getRequestConfig(settings) {
+function getRequestConfig(settings) {
   const {
     allowMultipleRequests = false,
     disableErrorNotify = false,
@@ -380,24 +379,12 @@ function apiDelete(resource, settings = {}) {
 }
 
 // Create the API service object with the same interface as the original class
-export const apiService = {
+export const http = {
+  init: initApi,
   get: apiGet,
   post: apiPost,
   put: apiPut,
   patch: apiPatch,
   delete: apiDelete,
-  cancelPendingRequestsByResource,
   cancelPendingRequests,
-  init: initApi,
-  keysToCamelCase,
-  keysToSnakeCase,
-  urlQueryToSnakeCase,
-  setAxiosInterceptors,
-  getResponseMessage,
-  showSuccessNotify,
-  loader,
-  getRequestConfig,
 };
-
-// Maintain backward compatibility with default export
-export default apiService;

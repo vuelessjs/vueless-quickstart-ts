@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { createVueless, createVueI18nAdapter } from "vueless";
 
-import ApiService from "./utils/api";
+import { http } from "./utils/http.ts";
 import { i18nInstance } from "./utils/i18n.ts";
 
 import App from "./App.vue";
@@ -10,7 +10,7 @@ import router from "./router";
 
 import "/index.css";
 
-ApiService.init();
+http.init();
 router.init().then(() => {
   appInit();
 });

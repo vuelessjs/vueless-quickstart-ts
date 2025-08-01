@@ -16,7 +16,7 @@
         <UIcon :src="VuelessOuter" alt="Vueless UI" class="size-16 mr-1" color="success" />
         <UIcon :src="VuelessInner" alt="Vueless UI" class="size-8 absolute left-6" />
 
-        <UHeader size="2xl" class="text-nowrap">Vueless UI</UHeader>
+        <UHeader size="2xl" class="text-nowrap" weight="bold">Vueless UI</UHeader>
       </URow>
 
       <UText
