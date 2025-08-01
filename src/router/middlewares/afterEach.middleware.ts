@@ -19,6 +19,6 @@ export default async (to: RouteLocation) => {
     suffix: import.meta.env.VITE_PROJECT_NAME,
   });
 
-  // Disable global full screen loader (cat loader).
+  // Disable global full screen loader.
   loaderOverlayOff();
 };
