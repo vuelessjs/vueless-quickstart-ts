@@ -1,4 +1,6 @@
-import { camelCase, snakeCase, isArray, isObject, reduce } from "lodash-es";
+import QS from "qs";
+import axios from "axios";
+import { camelCase, snakeCase, isArray, isObject } from "lodash-es";
 import {
   notifySuccess,
   notifyError,
@@ -6,47 +8,37 @@ import {
   loaderProgressOn,
   loaderProgressOff,
 } from "vueless";
-import QS from "qs";
-import axios from "axios";
 
-import type { NotificationType } from "vueless/ui.text-notify/constants";
+import { NotificationType } from "vueless/ui.text-notify/constants";
+import type { IStringifyOptions } from "qs";
+import type {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 
-export const qsOptions = {
+type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
+type NotifyMessage = { label?: string; description: string };
+
+type AppAxiosRequestConfig = AxiosRequestConfig & {
+  allowMultipleRequests?: boolean;
+  disableErrorNotify?: boolean;
+};
+
+type RequestSettings = Partial<AppAxiosRequestConfig> & {
+  withLoader?: boolean;
+  withNotify?: boolean;
+  delaySuccessNotify?: boolean;
+};
+
+const qsOptions: IStringifyOptions = {
   arrayFormat: "repeat",
   encode: false,
 };
 
-const pendingRequests = new Map();
-
-/**
- * Cancels all requests which includes given resource and method.
- *
- * @param {string} resource - Endpoint string.
- * @param {('GET'|'POST'|'PATCH'|'DELETE'|'PUT')} [method] - HTTP method.
- */
-function cancelPendingRequestsByResource(resource: string, method) {
-  const resourceWithoutQuery = resource.split("?").at(0);
-
-  const targetKeys = Array.from(pendingRequests.keys()).filter((key) => {
-    const keyWithoutQuery = key.split("?").at(0);
-
-    if (method) {
-      return keyWithoutQuery === `${method}:${resourceWithoutQuery}`;
-    }
-
-    return keyWithoutQuery === resourceWithoutQuery;
-  });
-
-  targetKeys.forEach((key) => {
-    pendingRequests.get(key).abort();
-    pendingRequests.delete(key);
-  });
-}
-
-function cancelPendingRequests() {
-  Array.from(pendingRequests.values()).forEach((controller) => controller.abort());
-  pendingRequests.clear();
-}
+const pendingRequests = new Map<string, AbortController>();
 
 /**
  * Inits axios
@@ -61,51 +53,157 @@ function apiInit() {
 }
 
 /**
- * Converts all keys in an object or array from snake_case to camelCase.
- *
- * @param {Object|Array} obj - The object or array to convert.
- * @returns {Object|Array} - The new object or array with camelCase keys.
+ * Change loader state.
  */
-function keysToCamelCase(obj) {
-  if (isArray(obj)) {
-    return obj.map((v) => keysToCamelCase(v));
-  } else if (isObject(obj)) {
-    return Object.entries(obj).reduce((result, [key, value]) => {
-      const newKey = key.includes("_") ? camelCase(key) : key;
+function loader(state: "on" | "off", resource: string) {
+  if (state === "on") loaderProgressOn(resource);
+  if (state === "off") loaderProgressOff(resource);
+}
 
-      result[newKey] = keysToCamelCase(value);
+/**
+ * Show success notify or set type and message in local storage for display with delay
+ */
+function showSuccessNotify(data: AxiosResponse["data"], withDelay: boolean = false) {
+  /* Retrieve message from response. */
+  const message = data.message;
 
-      return result;
-    }, {});
+  withDelay
+    ? setDelayedNotify({ type: NotificationType.Success, description: message })
+    : notifySuccess({ description: message });
+}
+
+/**
+ * Get error message code for global notification.
+ */
+function getErrorResponseMessages(data?: AxiosResponse["data"]): NotifyMessage[] {
+  if (Array.isArray(data)) {
+    return [{ description: data.join(", ") }];
   }
 
-  return obj;
+  return Object.entries(data).map(([label, description]) => ({
+    label: label ? label[0].toUpperCase() + label.slice(1) : undefined,
+    description: Array.isArray(description) ? description.join(", ") : String(description),
+  }));
+}
+
+/**
+ * Set axios interceptors.
+ */
+function setAxiosInterceptors($axios: AxiosInstance) {
+  $axios.interceptors.response.use(
+    (response: AxiosResponse) => {
+      loader("off", response.config?.url || "");
+
+      if (response.data) {
+        response.data = keysToCamelCase(response.data);
+      }
+
+      return response;
+    },
+    async (error: AxiosError) => {
+      const { config, response, message } = error;
+      const apiMessage = getErrorResponseMessages(response?.data);
+
+      loader("off", config?.url || "");
+
+      // show error notification if it isn't disabled in partiular api request
+      if (!(config as AppAxiosRequestConfig)?.disableErrorNotify) {
+        message === "Network Error"
+          ? notifyError({ label: message })
+          : apiMessage.forEach((message) => notifyError(message));
+      }
+
+      return Promise.reject(error);
+    },
+  );
+
+  $axios.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
+    const accessToken = ""; // your access token
+
+    request.headers.Authorization = `Bearer ${accessToken}`;
+    request.url = urlQueryToSnakeCase(request.url || "");
+
+    if (request.data && !(request.data instanceof FormData)) {
+      request.data = keysToSnakeCase(request.data);
+    }
+
+    return request;
+  });
+}
+
+/**
+ * Cancels all requests that include a given resource and method.
+ */
+function cancelPendingRequestsByResource(resource: string, method?: HttpMethod) {
+  const [resourceWithoutQuery] = resource.split("?");
+
+  const targetKeys = Array.from(pendingRequests.keys()).filter((key) => {
+    const [keyWithoutQuery] = key.split("?");
+
+    return method
+      ? keyWithoutQuery === `${method}:${resourceWithoutQuery}`
+      : keyWithoutQuery === resourceWithoutQuery;
+  });
+
+  targetKeys.forEach((key) => {
+    const controller = pendingRequests.get(key);
+
+    if (controller) {
+      controller.abort();
+    }
+
+    pendingRequests.delete(key);
+  });
+}
+
+/**
+ * Cancels all pending requests.
+ */
+function cancelPendingRequests() {
+  Array.from(pendingRequests.values()).forEach((controller) => controller.abort());
+
+  pendingRequests.clear();
+}
+
+/**
+ * Converts all keys in an object or array from snake_case to camelCase.
+ */
+function keysToCamelCase(data: unknown): unknown {
+  if (isArray(data)) {
+    return data.map((v) => keysToCamelCase(v));
+  } else if (isObject(data)) {
+    const entries = Object.entries(data).map(([key, value]) => {
+      const newKey = key.includes("_") ? camelCase(key) : key;
+
+      return [newKey, keysToCamelCase(value)];
+    });
+
+    return Object.fromEntries(entries);
+  }
+
+  return data;
 }
 
 /**
  * Converts all keys in an object or array from camelCase to snake_case.
- *
- * @param {Object|Array} obj - The object or array to convert.
- * @returns {Object|Array} - The new object or array with snake_case keys.
  */
-function keysToSnakeCase(obj) {
-  if (isArray(obj)) {
-    return obj.map((v) => keysToSnakeCase(v));
-  } else if (isObject(obj)) {
-    return reduce(
-      obj,
-      (result, value, key) => {
-        result[snakeCase(key)] = keysToSnakeCase(value);
+function keysToSnakeCase(data: unknown): unknown {
+  if (isArray(data)) {
+    return data.map((v) => keysToSnakeCase(v));
+  } else if (isObject(data)) {
+    const entries = Object.entries(data).map(([key, value]) => {
+      return [snakeCase(String(key)), keysToSnakeCase(value)];
+    });
 
-        return result;
-      },
-      {},
-    );
+    return Object.fromEntries(entries);
   }
 
-  return obj;
+  return data;
 }
 
+/**
+ * Converts all keys in a query string from camelCase to snake_case.
+ */
 function urlQueryToSnakeCase(url: string) {
   const [baseUrl, queries] = url.split("?");
 
@@ -119,118 +217,23 @@ function urlQueryToSnakeCase(url: string) {
 }
 
 /**
- * Set axios interceptors
- * @param { Object } $axios
- */
-function setAxiosInterceptors($axios) {
-  $axios.interceptors.response.use(
-    (response) => {
-      loader("off", response.config?.url);
-
-      if (response.data) {
-        response.data = keysToCamelCase(response.data);
-      }
-
-      return response;
-    },
-    async (error) => {
-      const { config, response, message } = error;
-      const apiMessage = getResponseMessage(response);
-
-      loader("off", config?.url);
-
-      // show error notification if it isn't disabled in partiular api request
-      if (!config?.disableErrorNotify) {
-        if (message === "Network Error") {
-          notifyError({ label: message });
-        } else {
-          apiMessage.forEach((message) => notifyError(message));
-        }
-      }
-
-      return Promise.reject(error);
-    },
-  );
-
-  $axios.interceptors.request.use(async (request) => {
-    const accessToken = ""; // your access token
-
-    request.headers.Authorization = `Bearer ${accessToken}`;
-    request.url = urlQueryToSnakeCase(request.url);
-
-    if (request.data && !(request.data instanceof FormData)) {
-      request.data = keysToSnakeCase(request.data);
-    }
-
-    return request;
-  });
-}
-
-/**
- * Get message code for global notification
- * @param { Object } response
- * @returns String
- */
-function getResponseMessage(response: string) {
-  if (Array.isArray(response?.data)) {
-    return [{ description: response?.data.join(", ") }];
-  } else {
-    return Object.entries(response?.data || {}).map(([label, description]) => ({
-      label: label[0].toUpperCase() + label.slice(1),
-      description: Array.isArray(description) ? description.join(", ") : description,
-    }));
-  }
-}
-
-/**
- * Show success notify or set type and message in local storage for display with delay
- */
-function showSuccessNotify(message: string, withDelay: boolean) {
-  if (withDelay) {
-    setDelayedNotify({
-      type: "success" as NotificationType,
-      description: message,
-    });
-  } else {
-    notifySuccess({ description: message });
-  }
-}
-
-/**
- * Change loader state.
- */
-function loader(state: "on" | "off", resource: string) {
-  // console.log(state, resource);
-  if (state === "on") loaderProgressOn(resource);
-  if (state === "off") loaderProgressOff(resource);
-}
-
-/**
  * Get axios request config (method for redeclaration)
- * @param { Object } settings
- * @returns { Object }
  */
-function getRequestConfig(settings) {
-  const {
-    allowMultipleRequests = false,
-    disableErrorNotify = false,
-    signal = undefined,
-  } = settings;
-
-  const config = {
+function getRequestConfig(options: Partial<AppAxiosRequestConfig> = {}) {
+  const config: AppAxiosRequestConfig = {
     baseURL: axios.defaults.baseURL,
   };
 
-  if (allowMultipleRequests) {
-    config.allowMultipleRequests = allowMultipleRequests;
+  if (options.allowMultipleRequests) {
+    config.allowMultipleRequests = options.allowMultipleRequests;
   }
 
-  if (disableErrorNotify) {
-    config.disableErrorNotify = disableErrorNotify;
+  if (options.disableErrorNotify) {
+    config.disableErrorNotify = options.disableErrorNotify;
   }
 
-  if (signal) {
-    config.signal = signal;
+  if (options.signal) {
+    config.signal = options.signal;
   }
 
   return config;
@@ -238,137 +241,100 @@ function getRequestConfig(settings) {
 
 /**
  * Send the GET HTTP request
- * @param { String } resource
- * @param { Object } settings
- * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiGet(resource: string, settings = {}) {
-  const abortController = new AbortController();
-  const config = getRequestConfig({
-    ...settings,
-    signal: abortController.signal,
-  });
-  const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
-
+async function apiGet(resource: string, options: RequestSettings = {}) {
   cancelPendingRequestsByResource(resource, "GET");
 
-  pendingRequests.set(`GET:${resource}`, abortController);
-
-  if (withLoader) {
+  if (options.withLoader) {
     loader("on", resource);
   }
 
-  return axios.get(resource, config).then((response) => {
-    pendingRequests.delete(resource);
+  const abortController = new AbortController();
+  const config = getRequestConfig({ ...options, signal: abortController.signal });
 
-    if (withNotify) {
-      const message = getResponseMessage(response);
+  pendingRequests.set(`GET:${resource}`, abortController);
 
-      showSuccessNotify(message, delaySuccessNotify);
-    }
+  const response = await axios.get(resource, config);
 
-    return response;
-  });
+  pendingRequests.delete(`GET:${resource}`);
+
+  if (options.withNotify) {
+    showSuccessNotify(response?.data, options.delaySuccessNotify);
+  }
+
+  return response;
 }
 
 /**
  * Set the POST HTTP request
- * @param { String } resource
- * @param params
- * @param { Object } settings
- * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiPost(resource: string, params = null, settings = {}) {
-  const config = getRequestConfig(settings);
-  const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
-
-  if (withLoader) {
+async function apiPost(resource: string, params: unknown = null, options: RequestSettings = {}) {
+  if (options.withLoader) {
     loader("on", resource);
   }
 
-  return axios.post(resource, params, config).then((response) => {
-    if (withNotify) {
-      const message = getResponseMessage(response);
+  const config = getRequestConfig(options);
+  const response = await axios.post(resource, params, config);
 
-      showSuccessNotify(message, delaySuccessNotify);
-    }
+  if (options.withNotify) {
+    showSuccessNotify(response?.data, options.delaySuccessNotify);
+  }
 
-    return response;
-  });
+  return response;
 }
 
 /**
  * Send the PUT HTTP request
- * @param { String } resource
- * @param params
- * @param { Object } settings
- * @returns {IDBRequest<IDBValidKey> | Promise<void>}
  */
-function apiPut(resource: string, params = null, settings = {}) {
-  const config = getRequestConfig(settings);
-  const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
-
-  if (withLoader) {
+async function apiPut(resource: string, params: unknown = null, options: RequestSettings = {}) {
+  if (options.withLoader) {
     loader("on", resource);
   }
 
-  return axios.put(resource, params, config).then((response) => {
-    if (withNotify) {
-      const message = getResponseMessage(response);
+  const config = getRequestConfig(options);
+  const response = await axios.put(resource, params, config);
 
-      showSuccessNotify(message, delaySuccessNotify);
-    }
+  if (options.withNotify) {
+    showSuccessNotify(response?.data, options.delaySuccessNotify);
+  }
 
-    return response;
-  });
+  return response;
 }
 
 /**
  * Send the PATCH HTTP request
- * @param { String } resource
- * @param params
- * @param { Object } settings
- * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiPatch(resource: string, params = null, settings = {}) {
-  const config = getRequestConfig(settings);
-  const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
-
-  if (withLoader) {
+async function apiPatch(resource: string, params: unknown = null, options: RequestSettings = {}) {
+  if (options.withLoader) {
     loader("on", resource);
   }
 
-  return axios.patch(resource, params, config).then((response) => {
-    if (withNotify) {
-      const message = getResponseMessage(response);
+  const config = getRequestConfig(options);
+  const response = await axios.patch(resource, params, config);
 
-      showSuccessNotify(message, delaySuccessNotify);
-    }
+  if (options.withNotify) {
+    showSuccessNotify(response?.data, options.delaySuccessNotify);
+  }
 
-    return response;
-  });
+  return response;
 }
 
 /**
  * Send the DELETE HTTP request
  */
-function apiDelete(resource: string, settings = {}) {
-  const config = getRequestConfig(settings);
-  const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
-
-  if (withLoader) {
+async function apiDelete(resource: string, options: RequestSettings = {}) {
+  if (options.withLoader) {
     loader("on", resource);
   }
 
-  return axios.delete(resource, config).then((response) => {
-    if (withNotify) {
-      const message = getResponseMessage(response);
+  const config = getRequestConfig(options);
+  const response = await axios.delete(resource, config);
 
-      showSuccessNotify(message, delaySuccessNotify);
-    }
+  if (options.withNotify) {
+    showSuccessNotify(response?.data, options.delaySuccessNotify);
+  }
 
-    return response;
-  });
+  return response;
 }
 
 /**
