@@ -1,6 +1,6 @@
 <template>
   <UCol justify="center" align="center" block class="bg-default lg:min-h-screen p-5">
-    <UCol align="center" gap="xl" class="lg:py-8">
+    <UCol align="center" gap="lg" class="lg:py-8">
       <UBadge
         size="lg"
         variant="subtle"
@@ -19,6 +19,7 @@
           class="size-12 md:size-16 mr-1"
           color="success"
         />
+
         <UIcon
           :src="VuelessInner"
           alt="Vueless UI"
