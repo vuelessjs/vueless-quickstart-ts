@@ -1,9 +1,8 @@
-/* eslint-disable storybook/no-uninstalled-addons */
 /** @type { import('@storybook/vue3-vite').StorybookConfig } */
-export default {
+import { defineConfigWithVueless } from "vueless/utils/node/storybook.js";
+
+export default defineConfigWithVueless({
   stories: [
-    "../node_modules/vueless/**/stories.{js,jsx,ts,tsx}",
-    "../node_modules/vueless/**/docs.mdx",
     /* Define a path to your own component stories. */
     // "../src/**/stories.{js,jsx,ts,tsx}",
     // "../src/**/docs.mdx",
@@ -26,4 +25,4 @@ export default {
     ...config,
     BASE_URL: "/",
   }),
-};
+});
