@@ -25,7 +25,7 @@ export const i18nInstance: I18n = createI18n({
     if (!isLocaleKey) {
       /* eslint-disable no-console */
       console.warn(
-        `[App] Missing translation for key "${key}" in locale "${locale}". Please check the translation files.`,
+        `Missing translation for key "${key}" in locale "${locale}". Please check the translation files.`,
       );
       console.groupCollapsed(`${key} trace`);
       console.trace();
