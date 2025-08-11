@@ -24,7 +24,7 @@ const pendingRequests = new Map();
  * @param {string} resource - Endpoint string.
  * @param {('GET'|'POST'|'PATCH'|'DELETE'|'PUT')} [method] - HTTP method.
  */
-function cancelPendingRequestsByResource(resource, method) {
+function cancelPendingRequestsByResource(resource: string, method) {
   const resourceWithoutQuery = resource.split("?").at(0);
 
   const targetKeys = Array.from(pendingRequests.keys()).filter((key) => {
@@ -51,7 +51,7 @@ function cancelPendingRequests() {
 /**
  * Inits axios
  */
-function initApi() {
+function apiInit() {
   const restApiPrefix = import.meta.env.VITE_REST_API_PREFIX;
   const apiBaseUrl = import.meta.env.VITE_API_DOMAIN;
 
@@ -171,7 +171,7 @@ function setAxiosInterceptors($axios) {
  * @param { Object } response
  * @returns String
  */
-function getResponseMessage(response) {
+function getResponseMessage(response: string) {
   if (Array.isArray(response?.data)) {
     return [{ description: response?.data.join(", ") }];
   } else {
@@ -203,7 +203,7 @@ function showSuccessNotify(message, withDelay) {
  * @param { String } state
  * @param { String } resource
  */
-function loader(state, resource) {
+function loader(state, resource: string) {
   // console.log(state, resource);
   if (state === "on") loaderProgressOn(resource);
   if (state === "off") loaderProgressOff(resource);
@@ -246,7 +246,7 @@ function getRequestConfig(settings) {
  * @param { Object } settings
  * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiGet(resource, settings = {}) {
+function apiGet(resource: string, settings = {}) {
   const abortController = new AbortController();
   const config = getRequestConfig({
     ...settings,
@@ -282,7 +282,7 @@ function apiGet(resource, settings = {}) {
  * @param { Object } settings
  * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiPost(resource, params = null, settings = {}) {
+function apiPost(resource: string, params = null, settings = {}) {
   const config = getRequestConfig(settings);
   const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
@@ -308,7 +308,7 @@ function apiPost(resource, params = null, settings = {}) {
  * @param { Object } settings
  * @returns {IDBRequest<IDBValidKey> | Promise<void>}
  */
-function apiPut(resource, params = null, settings = {}) {
+function apiPut(resource: string, params = null, settings = {}) {
   const config = getRequestConfig(settings);
   const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
@@ -334,7 +334,7 @@ function apiPut(resource, params = null, settings = {}) {
  * @param { Object } settings
  * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiPatch(resource, params = null, settings = {}) {
+function apiPatch(resource: string, params = null, settings = {}) {
   const config = getRequestConfig(settings);
   const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
@@ -355,11 +355,8 @@ function apiPatch(resource, params = null, settings = {}) {
 
 /**
  * Send the DELETE HTTP request
- * @param { String } resource
- * @param { Object } settings
- * @returns { IDBRequest<IDBValidKey> | Promise<void> }
  */
-function apiDelete(resource, settings = {}) {
+function apiDelete(resource: string, settings = {}) {
   const config = getRequestConfig(settings);
   const { withLoader = true, withNotify = false, delaySuccessNotify = false } = settings;
 
@@ -378,9 +375,11 @@ function apiDelete(resource, settings = {}) {
   });
 }
 
-// Create the API service object with the same interface as the original class
+/**
+ * HTTP client
+ */
 export const http = {
-  init: initApi,
+  init: apiInit,
   get: apiGet,
   post: apiPost,
   put: apiPut,

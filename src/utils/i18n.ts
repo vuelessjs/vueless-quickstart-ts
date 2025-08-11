@@ -1,13 +1,17 @@
 import { createI18n } from "vue-i18n";
 
-import type { I18n } from "vue-i18n";
 import type { Ref } from "vue";
+import type { I18n } from "vue-i18n";
 
+/* Import all locales. */
 import en from "@/i18n/en.yaml";
 
 export const FALLBACK_LOCALE = "en";
 export const LOCALE_KEY = "language";
 
+/**
+ * Create Vue i18n instance.
+ */
 export const i18nInstance: I18n = createI18n({
   legacy: false,
   messages: {
@@ -21,7 +25,7 @@ export const i18nInstance: I18n = createI18n({
     if (!isLocaleKey) {
       /* eslint-disable no-console */
       console.warn(
-        `[Fine] Missing translation for key "${key}" in locale "${locale}". Please check the translation files.`,
+        `[App] Missing translation for key "${key}" in locale "${locale}". Please check the translation files.`,
       );
       console.groupCollapsed(`${key} trace`);
       console.trace();
@@ -77,4 +81,7 @@ export function getActiveLanguage(): string {
   return localStorage.getItem(LOCALE_KEY) || FALLBACK_LOCALE;
 }
 
+/**
+ * Export i18n instance for use in components.
+ */
 export const i18n = i18nInstance.global;
