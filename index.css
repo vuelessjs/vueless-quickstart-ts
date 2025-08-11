@@ -1,2 +1,10 @@
 @import "tailwindcss";
 @import "vueless";
+
+@theme {
+  --font-montserrat: Montserrat, sans-serif;
+}
+
+html, body {
+  @apply text-default font-montserrat;
+}
