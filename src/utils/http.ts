@@ -106,7 +106,7 @@ function keysToSnakeCase(obj) {
   return obj;
 }
 
-function urlQueryToSnakeCase(url) {
+function urlQueryToSnakeCase(url: string) {
   const [baseUrl, queries] = url.split("?");
 
   if (!queries) return url;
@@ -184,10 +184,8 @@ function getResponseMessage(response: string) {
 
 /**
  * Show success notify or set type and message in local storage for display with delay
- * @param { String } message
- * @param { Boolean } withDelay
  */
-function showSuccessNotify(message, withDelay) {
+function showSuccessNotify(message: string, withDelay: boolean) {
   if (withDelay) {
     setDelayedNotify({
       type: "success" as NotificationType,
@@ -199,11 +197,9 @@ function showSuccessNotify(message, withDelay) {
 }
 
 /**
- * Change loaders state (on | off)
- * @param { String } state
- * @param { String } resource
+ * Change loader state.
  */
-function loader(state, resource: string) {
+function loader(state: "on" | "off", resource: string) {
   // console.log(state, resource);
   if (state === "on") loaderProgressOn(resource);
   if (state === "off") loaderProgressOff(resource);
