@@ -2,8 +2,8 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { createVueless, createVueI18nAdapter } from "vueless";
 
-import { http } from "./utils/http.ts";
-import { i18nInstance } from "./utils/i18n.ts";
+import { http } from "./utils/http";
+import { i18nInstance } from "./utils/i18n";
 
 import App from "./App.vue";
 import { router, initModuleRoutes } from "./router";
