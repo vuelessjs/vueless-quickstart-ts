@@ -6,7 +6,7 @@
         variant="subtle"
         color="neutral"
         round
-        class="font-semibold py-1.5 text-small md:text-medium"
+        class="font-medium py-1.5 text-small md:text-medium"
         :class="!version && 'animate-pulse'"
       >
         {{ $t("badge.releaseText", { version: version || "1.X.X" }) }}
@@ -16,7 +16,7 @@
         <UIcon :src="VuelessOuter" alt="Vueless UI" class="size-16 mr-1" color="success" />
         <UIcon :src="VuelessInner" alt="Vueless UI" class="size-8 absolute left-6" />
 
-        <UHeader size="2xl" class="text-nowrap" weight="bold">Vueless UI</UHeader>
+        <UHeader :label="$t('title.vueless')" size="2xl" class="text-nowrap" weight="bold" />
       </URow>
 
       <UText
@@ -30,65 +30,48 @@
     </UCol>
 
     <URow justify="between" align="stretch" gap="xl" block class="max-w-5xl">
-      <UCard variant="outlined" class="flex items-center">
-        <URow block>
-          <UIcon name="docs" color="success" size="lg" />
+      <ULink href="https://docs.vueless.com/" target="_blank">
+        <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
+          <URow gap="sm" block>
+            <UIcon name="docs" color="success" size="md" class="-mt-1" />
 
-          <UCol>
-            <UChip icon="arrow_outward" size="sm">
-              <ULink
-                :label="$t('label.docs')"
-                size="lg"
-                href="https://docs.vueless.com/"
-                target="blank"
-                class="mr-2 font-semibold"
+            <UCol gap="sm">
+              <UText :label="$t('label.docs')" size="lg" weight="semibold" />
+              <UText :label="$t('description.docs')" variant="lifted" class="leading-normal" />
+            </UCol>
+          </URow>
+        </UCard>
+      </ULink>
+
+      <ULink href="https://ui.vueless.com" target="_blank">
+        <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
+          <URow gap="sm" block>
+            <UIcon name="category" color="success" size="md" class="-mt-1" />
+
+            <UCol gap="sm">
+              <UText :label="$t('label.components')" size="lg" weight="semibold" />
+              <UText
+                :label="$t('description.components')"
+                variant="lifted"
+                class="leading-normal"
               />
-            </UChip>
+            </UCol>
+          </URow>
+        </UCard>
+      </ULink>
 
-            <UText :label="$t('description.docs')" variant="lifted" />
-          </UCol>
-        </URow>
-      </UCard>
+      <ULink href="https://github.com/vuelessjs/vueless" target="_blank">
+        <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
+          <URow gap="sm" block>
+            <UIcon name="star" color="success" size="md" class="-mt-1" />
 
-      <UCard variant="outlined" class="flex items-center">
-        <URow block>
-          <UIcon name="category" color="success" size="lg" />
-
-          <UCol>
-            <UChip icon="arrow_outward" size="sm">
-              <ULink
-                :label="$t('label.components')"
-                size="lg"
-                href="https://ui.vueless.com"
-                target="blank"
-                class="mr-2 font-semibold"
-              />
-            </UChip>
-
-            <UText :label="$t('description.components')" variant="lifted" />
-          </UCol>
-        </URow>
-      </UCard>
-
-      <UCard variant="outlined" class="flex items-center">
-        <URow block>
-          <UIcon name="star" color="success" size="lg" />
-
-          <UCol>
-            <UChip icon="arrow_outward" size="sm">
-              <ULink
-                :label="$t('label.star')"
-                size="lg"
-                href="https://github.com/vuelessjs/vueless"
-                target="blank"
-                class="mr-2 font-semibold"
-              />
-            </UChip>
-
-            <UText :label="$t('description.star')" variant="lifted" />
-          </UCol>
-        </URow>
-      </UCard>
+            <UCol gap="sm">
+              <UText :label="$t('label.star')" size="lg" weight="semibold" />
+              <UText :label="$t('description.star')" variant="lifted" class="leading-normal" />
+            </UCol>
+          </URow>
+        </UCard>
+      </ULink>
     </URow>
   </UCol>
 </template>
