@@ -43,7 +43,7 @@
       />
     </UCol>
 
-    <UCol align="between" justify="stretch" gap="xl" block class="max-w-5xl lg:flex-row">
+    <UCol align="stretch" justify="between" gap="xl" block class="max-w-5xl lg:flex-row">
       <ULink href="https://docs.vueless.com/" target="_blank">
         <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
           <URow gap="sm" block>
