@@ -2,29 +2,58 @@ import { cloneDeep, merge } from "lodash-es";
 
 import { FALLBACK_LOCALE } from "./i18n";
 
-const globalMessages = {};
-const moduleMessages = {};
+// Type definitions
+interface LocaleMessages {
+  [key: string]: string | LocaleMessages;
+}
+
+interface ModuleLocales {
+  [moduleName: string]: LocaleMessages;
+}
+
+interface GlobalMessages {
+  [locale: string]: LocaleMessages;
+}
+
+interface ModuleMessages {
+  [locale: string]: ModuleLocales;
+}
+
+interface ImportedLocale {
+  default: LocaleMessages;
+}
+
+const globalMessages: GlobalMessages = {};
+const moduleMessages: ModuleMessages = {};
 
 const globalLocales = import.meta.glob("@/i18n/**/*.yaml");
 
 for (const path in globalLocales) {
-  const locales = await globalLocales[path]();
-  const lang = path.split(".").shift().split("/").pop();
+  const locales = (await globalLocales[path]()) as ImportedLocale;
+  const pathParts = path.split(".");
+  const langPart = pathParts.shift()?.split("/").pop();
 
-  globalMessages[lang] = locales.default;
+  if (langPart) {
+    globalMessages[langPart] = locales.default;
+  }
 }
 
 const modules = import.meta.glob("@/modules/**/*.yaml");
 
 for (const path in modules) {
-  const locales = await modules[path]();
-  const lang = path.split(".").shift().split("/").pop();
-  const module = path.split("modules").pop().split("/").at(1);
+  const locales = (await modules[path]()) as ImportedLocale;
+  const pathParts = path.split(".");
+  const langPart = pathParts.shift()?.split("/").pop();
+  const moduleParts = path.split("modules").pop()?.split("/");
+  const module = moduleParts?.at(1);
 
-  moduleMessages[lang] = {
-    ...moduleMessages[lang],
-    [module]: locales.default,
-  };
+  if (langPart && module) {
+    if (!moduleMessages[langPart]) {
+      moduleMessages[langPart] = {};
+    }
+
+    moduleMessages[langPart][module] = locales.default;
+  }
 }
 
 /**
@@ -36,16 +65,20 @@ for (const path in modules) {
  * @returns array
  */
 // TODO: Check if it works correctly. Show module that caused warning
-function validateLocaleDifference(messages, module, lang) {
+function validateLocaleDifference(messages: LocaleMessages, module: string, lang: string): void {
   if (sessionStorage.getItem("localeKeysDiff")) {
     sessionStorage.removeItem("localeKeysDiff");
 
     return;
   }
 
-  const fallbackMessages = moduleMessages[FALLBACK_LOCALE]
-    ? merge(moduleMessages[FALLBACK_LOCALE][module], globalMessages[FALLBACK_LOCALE])
-    : globalMessages[FALLBACK_LOCALE];
+  const fallbackModuleMessages = moduleMessages[FALLBACK_LOCALE]?.[module];
+  const fallbackGlobalMessages = globalMessages[FALLBACK_LOCALE];
+
+  const fallbackMessages =
+    fallbackModuleMessages && fallbackGlobalMessages
+      ? merge(fallbackModuleMessages, fallbackGlobalMessages)
+      : fallbackGlobalMessages || {};
 
   const diffKeys = compareKeys(messages, fallbackMessages);
   const message = `There are keys difference between "${FALLBACK_LOCALE}" and "${lang}" locales:`;
@@ -56,12 +89,12 @@ function validateLocaleDifference(messages, module, lang) {
   sessionStorage.setItem("localeKeysDiff", "true");
 }
 
-function compareKeys(obj1, obj2, path = "") {
+function compareKeys(obj1: LocaleMessages, obj2: LocaleMessages, path = ""): string[] {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
   const uniqueKeys = new Set([...keys1, ...keys2]);
 
-  let diffPaths = [];
+  let diffPaths: string[] = [];
 
   uniqueKeys.forEach((key) => {
     const newPath = path ? `${path}.${key}` : key;
@@ -78,7 +111,7 @@ function compareKeys(obj1, obj2, path = "") {
   return diffPaths;
 }
 
-function validateModuleLocaleKeysOrder(module, fallbackLocale) {
+function validateModuleLocaleKeysOrder(module: string, fallbackLocale: string): void {
   Object.keys(moduleMessages).forEach((locale) => {
     if (locale === fallbackLocale || !moduleMessages[locale] || !moduleMessages[locale][module]) {
       return;
@@ -99,11 +132,11 @@ function validateModuleLocaleKeysOrder(module, fallbackLocale) {
   });
 }
 
-function compareObjectKeysOrder(obj1, obj2, path = "") {
+function compareObjectKeysOrder(obj1: LocaleMessages, obj2: LocaleMessages, path = ""): string[] {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
 
-  let orderWarnings = [];
+  let orderWarnings: string[] = [];
 
   keys1.forEach((key, index) => {
     const newPath = path ? `${path}.${key}` : key;
@@ -122,7 +155,7 @@ function compareObjectKeysOrder(obj1, obj2, path = "") {
   return orderWarnings;
 }
 
-export function validateModuleLocaleMassages(module, currentLocale) {
+export function validateModuleLocaleMassages(module: string, currentLocale: string) {
   const messages = moduleMessages[currentLocale]
     ? merge(cloneDeep(moduleMessages[currentLocale][module]), globalMessages[currentLocale])
     : globalMessages[currentLocale];
