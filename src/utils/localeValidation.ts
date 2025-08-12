@@ -2,7 +2,6 @@ import { cloneDeep, merge } from "lodash-es";
 
 import { FALLBACK_LOCALE } from "./i18n";
 
-// Type definitions
 interface LocaleMessages {
   [key: string]: string | LocaleMessages;
 }
