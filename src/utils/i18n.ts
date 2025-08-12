@@ -81,7 +81,5 @@ export function getActiveLanguage(): string {
   return localStorage.getItem(LOCALE_KEY) || FALLBACK_LOCALE;
 }
 
-/**
- * Export i18n instance for use in components.
- */
-export const i18n = i18nInstance.global;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const i18n = i18nInstance.global as any;
