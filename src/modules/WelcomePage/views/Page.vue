@@ -91,10 +91,10 @@ import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useWelcomePageStore } from "../store";
-import { useModuleI18n } from "#WelcomePage/composables/useI18n";
+import { useModuleI18n } from "../composables/useI18n";
 
-import VuelessOuter from "../../../assets/images/vueless-logo-outer.svg?component";
-import VuelessInner from "../../../assets/images/vueless-logo-inner.svg?component";
+import VuelessOuter from "../assets/images/vueless-logo-outer.svg?component";
+import VuelessInner from "../assets/images/vueless-logo-inner.svg?component";
 
 const { t } = useModuleI18n();
 
