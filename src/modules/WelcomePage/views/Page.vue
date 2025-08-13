@@ -1,4 +1,17 @@
 <template>
+  <img
+    src="../assets/images/gradient-top.svg"
+    alt=""
+    class="hidden lg:block dark:invert-100 select-none pointer-events-none absolute z-20 top-0 right-0"
+    width="900"
+  />
+  <img
+    src="../assets/images/gradient-bottom.svg"
+    alt=""
+    class="hidden lg:block dark:invert-100 select-none pointer-events-none absolute z-20 bottom-0 left-0"
+    width="1100"
+  />
+
   <UCol justify="center" align="center" block class="bg-default lg:min-h-screen p-5">
     <UCol align="center" gap="lg" class="lg:py-8">
       <UBadge
