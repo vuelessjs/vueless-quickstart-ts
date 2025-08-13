@@ -71,7 +71,7 @@ function validateLocaleDifference(messages: Messages, module: string, lang: stri
     fallbackGlobalMessages && isMessages(fallbackGlobalMessages) ? fallbackGlobalMessages : {};
 
   const fallbackMessages =
-    Object.keys(fallbackModuleMsgs).length > 0 && Object.keys(fallbackGlobalMsgs).length > 0
+    Object.keys(fallbackModuleMsgs).length && Object.keys(fallbackGlobalMsgs).length
       ? merge(fallbackModuleMsgs, fallbackGlobalMsgs)
       : fallbackGlobalMsgs;
 
@@ -158,11 +158,14 @@ export function validateModuleLocaleMassages(module: string, currentLocale: stri
   const moduleMsg = moduleMessages[currentLocale]?.[module];
   const globalMsg = globalMessages[currentLocale];
 
+  const isValidModuleMsg = moduleMsg && isMessages(moduleMsg);
+  const isValidGlobalMsg = globalMsg && isMessages(globalMsg);
+
   let messages: Messages = {};
 
-  if (moduleMsg && isMessages(moduleMsg) && globalMsg && isMessages(globalMsg)) {
+  if (isValidModuleMsg && isValidGlobalMsg) {
     messages = merge(cloneDeep(moduleMsg), globalMsg);
-  } else if (globalMsg && isMessages(globalMsg)) {
+  } else if (isValidGlobalMsg) {
     messages = globalMsg;
   }
 
