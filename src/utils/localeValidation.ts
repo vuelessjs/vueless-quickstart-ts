@@ -2,57 +2,47 @@ import { cloneDeep, merge } from "lodash-es";
 
 import { FALLBACK_LOCALE } from "./i18n";
 
-interface LocaleMessages {
-  [key: string]: string | LocaleMessages;
-}
-
-interface ModuleLocales {
-  [moduleName: string]: LocaleMessages;
-}
-
-interface GlobalMessages {
-  [locale: string]: LocaleMessages;
+interface Messages {
+  [key: string]: string | Messages;
 }
 
 interface ModuleMessages {
-  [locale: string]: ModuleLocales;
+  [key: string]: Messages;
 }
 
-interface ImportedLocale {
-  default: LocaleMessages;
-}
-
-const globalMessages: GlobalMessages = {};
+const globalMessages: Messages = {};
 const moduleMessages: ModuleMessages = {};
 
 const globalLocales = import.meta.glob("@/i18n/**/*.yaml");
 
 for (const path in globalLocales) {
-  const locales = (await globalLocales[path]()) as ImportedLocale;
+  const { default: locales } = (await globalLocales[path]()) as Messages;
   const pathParts = path.split(".");
-  const langPart = pathParts.shift()?.split("/").pop();
+  const lang = pathParts.shift()?.split("/").pop();
 
-  if (langPart) {
-    globalMessages[langPart] = locales.default;
+  if (lang) {
+    globalMessages[lang] = locales;
   }
 }
 
 const modules = import.meta.glob("@/modules/**/*.yaml");
 
 for (const path in modules) {
-  const locales = (await modules[path]()) as ImportedLocale;
   const pathParts = path.split(".");
-  const langPart = pathParts.shift()?.split("/").pop();
+  const lang = pathParts.shift()?.split("/").pop();
   const moduleParts = path.split("modules").pop()?.split("/");
   const module = moduleParts?.at(1);
 
-  if (langPart && module) {
-    if (!moduleMessages[langPart]) {
-      moduleMessages[langPart] = {};
-    }
-
-    moduleMessages[langPart][module] = locales.default;
+  if (!lang || !module) {
+    continue;
   }
+}
+
+/**
+ * Type guard to check if a value is a Messages object
+ */
+function isMessages(value: string | Messages): value is Messages {
+  return typeof value === "object" && value !== null;
 }
 
 /**
@@ -64,7 +54,7 @@ for (const path in modules) {
  * @returns array
  */
 // TODO: Check if it works correctly. Show module that caused warning
-function validateLocaleDifference(messages: LocaleMessages, module: string, lang: string): void {
+function validateLocaleDifference(messages: Messages, module: string, lang: string): void {
   if (sessionStorage.getItem("localeKeysDiff")) {
     sessionStorage.removeItem("localeKeysDiff");
 
@@ -74,10 +64,16 @@ function validateLocaleDifference(messages: LocaleMessages, module: string, lang
   const fallbackModuleMessages = moduleMessages[FALLBACK_LOCALE]?.[module];
   const fallbackGlobalMessages = globalMessages[FALLBACK_LOCALE];
 
+  const fallbackModuleMsgs =
+    fallbackModuleMessages && isMessages(fallbackModuleMessages) ? fallbackModuleMessages : {};
+
+  const fallbackGlobalMsgs =
+    fallbackGlobalMessages && isMessages(fallbackGlobalMessages) ? fallbackGlobalMessages : {};
+
   const fallbackMessages =
-    fallbackModuleMessages && fallbackGlobalMessages
-      ? merge(fallbackModuleMessages, fallbackGlobalMessages)
-      : fallbackGlobalMessages || {};
+    Object.keys(fallbackModuleMsgs).length > 0 && Object.keys(fallbackGlobalMsgs).length > 0
+      ? merge(fallbackModuleMsgs, fallbackGlobalMsgs)
+      : fallbackGlobalMsgs;
 
   const diffKeys = compareKeys(messages, fallbackMessages);
   const message = `There are keys difference between "${FALLBACK_LOCALE}" and "${lang}" locales:`;
@@ -88,7 +84,7 @@ function validateLocaleDifference(messages: LocaleMessages, module: string, lang
   sessionStorage.setItem("localeKeysDiff", "true");
 }
 
-function compareKeys(obj1: LocaleMessages, obj2: LocaleMessages, path = ""): string[] {
+function compareKeys(obj1: Messages, obj2: Messages, path = ""): string[] {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
   const uniqueKeys = new Set([...keys1, ...keys2]);
@@ -116,10 +112,14 @@ function validateModuleLocaleKeysOrder(module: string, fallbackLocale: string): 
       return;
     }
 
-    const orderWarnings = compareObjectKeysOrder(
-      moduleMessages[fallbackLocale][module],
-      moduleMessages[locale][module],
-    );
+    const fallbackModule = moduleMessages[fallbackLocale][module];
+    const currentModule = moduleMessages[locale][module];
+
+    if (!isMessages(fallbackModule) || !isMessages(currentModule)) {
+      return;
+    }
+
+    const orderWarnings = compareObjectKeysOrder(fallbackModule, currentModule);
 
     if (orderWarnings.length) {
       // eslint-disable-next-line no-console
@@ -131,7 +131,7 @@ function validateModuleLocaleKeysOrder(module: string, fallbackLocale: string): 
   });
 }
 
-function compareObjectKeysOrder(obj1: LocaleMessages, obj2: LocaleMessages, path = ""): string[] {
+function compareObjectKeysOrder(obj1: Messages, obj2: Messages, path = ""): string[] {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
 
@@ -155,9 +155,16 @@ function compareObjectKeysOrder(obj1: LocaleMessages, obj2: LocaleMessages, path
 }
 
 export function validateModuleLocaleMassages(module: string, currentLocale: string) {
-  const messages = moduleMessages[currentLocale]
-    ? merge(cloneDeep(moduleMessages[currentLocale][module]), globalMessages[currentLocale])
-    : globalMessages[currentLocale];
+  const moduleMsg = moduleMessages[currentLocale]?.[module];
+  const globalMsg = globalMessages[currentLocale];
+
+  let messages: Messages = {};
+
+  if (moduleMsg && isMessages(moduleMsg) && globalMsg && isMessages(globalMsg)) {
+    messages = merge(cloneDeep(moduleMsg), globalMsg);
+  } else if (globalMsg && isMessages(globalMsg)) {
+    messages = globalMsg;
+  }
 
   validateLocaleDifference(messages, module, currentLocale);
   validateModuleLocaleKeysOrder(module, currentLocale);
