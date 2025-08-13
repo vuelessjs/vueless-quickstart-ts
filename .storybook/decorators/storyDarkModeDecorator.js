@@ -1,6 +1,6 @@
 import { DecoratorHelpers } from "@storybook/addon-themes";
 import { setTheme } from "vueless";
-import { COLOR_MODE_KEY } from "vueless/constants.js";
+import { COLOR_MODE_KEY } from "vueless/constants";
 
 const { initializeThemeState, pluckThemeFromContext } = DecoratorHelpers;
 

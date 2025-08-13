@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 // Plugins
 import Vue from "@vitejs/plugin-vue";
 import { Vueless, TailwindCSS } from "vueless/plugin-vite";
-import { STORYBOOK_ENV } from "vueless/constants.js";
+import { STORYBOOK_ENV } from "vueless/constants";
 
 export default defineConfig({
   plugins: [Vue(), TailwindCSS(), Vueless({ env: STORYBOOK_ENV })],
