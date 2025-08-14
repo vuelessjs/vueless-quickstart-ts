@@ -36,6 +36,10 @@ for (const path in modules) {
   if (!lang || !module) {
     continue;
   }
+
+  if (!moduleMessages[lang]) {
+    moduleMessages[lang] = {};
+  }
 }
 
 /**
