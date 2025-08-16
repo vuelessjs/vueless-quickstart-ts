@@ -7,9 +7,9 @@ import {
   setDelayedNotify,
   loaderProgressOn,
   loaderProgressOff,
+  NotificationType,
 } from "vueless";
 
-import { NotificationType } from "vueless/ui.text-notify/constants";
 import type { IStringifyOptions } from "qs";
 import type {
   AxiosError,
@@ -33,6 +33,12 @@ type RequestSettings = Partial<AppAxiosRequestConfig> & {
   delaySuccessNotify?: boolean;
 };
 
+type HttpInitOptions = {
+  apiBaseUrl?: string;
+  restApiPrefix?: string;
+  baseUrl?: string;
+};
+
 const qsOptions: IStringifyOptions = {
   arrayFormat: "repeat",
   encode: false,
@@ -43,11 +49,10 @@ const pendingRequests = new Map<string, AbortController>();
 /**
  * Inits axios
  */
-function apiInit() {
-  const restApiPrefix = import.meta.env.VITE_REST_API_PREFIX;
-  const apiBaseUrl = import.meta.env.VITE_API_DOMAIN;
+function apiInit(options: HttpInitOptions) {
+  const { baseUrl = "" } = options;
 
-  axios.defaults.baseURL = apiBaseUrl + restApiPrefix;
+  axios.defaults.baseURL = baseUrl;
 
   setAxiosInterceptors(axios);
 }
@@ -61,7 +66,7 @@ function loader(state: "on" | "off", resource: string) {
 }
 
 /**
- * Show success notify or set type and message in local storage for display with delay
+ * Show success notify or set notify type and message in local storage for display with delay
  */
 function showSuccessNotify(data: AxiosResponse["data"], withDelay: boolean = false) {
   /* Retrieve message from response. */

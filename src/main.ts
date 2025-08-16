@@ -10,7 +10,9 @@ import { router, initModuleRoutes } from "./router";
 
 import "/index.css";
 
-http.init();
+http.init({
+  baseUrl: import.meta.env.VITE_DOMAIN + import.meta.env.VITE_REST_API_PREFIX,
+});
 
 initModuleRoutes().then(() => {
   appInit();
