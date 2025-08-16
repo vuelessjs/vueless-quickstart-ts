@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import type { RouteRecordRaw, RouteRecordName } from "vue-router";
-type RoutesModule = { default: RouteRecordRaw[] };
+import type { RouteRecord, RouteRecordName } from "vue-router";
+type RoutesModule = { default: RouteRecord[] };
 
 import mainLayout from "./layouts/mainLayout";
 

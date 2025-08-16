@@ -1,6 +1,7 @@
 import { getDelayedNotify, loaderOverlayOff, setTitle } from "vueless";
-import { i18n, getActiveLanguage } from "@/utils/i18n";
 import type { RouteLocation } from "vue-router";
+
+import { i18n } from "@/utils/i18n";
 
 export default async (to: RouteLocation) => {
   // Show delayed notification.
