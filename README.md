@@ -75,6 +75,14 @@ npm run lint:fix
 npm run lint:ci
 ```
 
+## TypeScript Checks
+
+Run TypeScript checks to ensure type safety:
+
+```bash
+npm run ts:check
+```
+
 ## Unit Tests
 
 Run automated unit tests:
