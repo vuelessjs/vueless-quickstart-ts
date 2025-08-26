@@ -1,7 +1,7 @@
 {
   "include": [
     "env.d.ts",
-    "**/*",
+    "**/*"
   ],
   "compilerOptions": {
     /* General */
@@ -19,7 +19,6 @@
 
     /* Path settings */
     "baseUrl": ".",
-    "rootDir": "./",
 
     /* Enables all strict type-checking options. */
     "strict": true,
@@ -30,6 +29,6 @@
     "resolveJsonModule": true,
 
     /* JS file support. */
-    "allowJs": true,
+    "allowJs": true
   }
 }
