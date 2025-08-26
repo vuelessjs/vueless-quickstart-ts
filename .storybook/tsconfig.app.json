@@ -1,10 +1,8 @@
 {
   "include": [
     "env.d.ts",
-    "src/**/*",
-    "src/**/*.vue"
+    "**/*",
   ],
-  "exclude": ["dist/**/*"],
   "compilerOptions": {
     /* General */
     "module": "ESNext",
@@ -13,7 +11,7 @@
     "useDefineForClassFields": true,
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true, // This is important for `<script setup>`.
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "tsBuildInfoFile": "./node_modules/.tmp/storybookTsconfig.app.tsbuildinfo",
     "removeComments": true,
     "skipLibCheck": true,
     "composite": true,
@@ -21,11 +19,7 @@
 
     /* Path settings */
     "baseUrl": ".",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "paths": {
-      "@/*": ["src/*"],
-    },
+    "rootDir": "./",
 
     /* Enables all strict type-checking options. */
     "strict": true,
@@ -37,8 +31,5 @@
 
     /* JS file support. */
     "allowJs": true,
-
-    /* Type checking depth settings */
-    "noErrorTruncation": true
   }
 }
