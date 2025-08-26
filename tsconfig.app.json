@@ -3,6 +3,8 @@
     "env.d.ts",
     "src/**/*",
     "src/**/*.vue",
+    ".vueless/**/*",
+    ".storybook/**/*"
   ],
   "exclude": ["dist/**/*"],
   "compilerOptions": {

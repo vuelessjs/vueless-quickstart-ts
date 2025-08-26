@@ -3,10 +3,10 @@
   "include": [
     "vite.config.*",
     "vitest.config.*",
-    "vueless.config.*",
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*",
+    "vueless.config.*",
     ".vueless/**/*"
   ],
   "compilerOptions": {
