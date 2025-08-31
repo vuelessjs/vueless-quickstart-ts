@@ -60,7 +60,7 @@
       <ULink href="https://docs.vueless.com/" target="_blank">
         <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
           <URow gap="sm" block>
-            <UIcon name="docs" color="success" size="md" class="-mt-1" />
+            <UIcon :src="Docs" color="success" size="md" class="-mt-1" />
 
             <UCol gap="sm">
               <UText :label="t('label.docs')" size="lg" weight="semibold" />
@@ -73,7 +73,7 @@
       <ULink href="https://ui.vueless.com" target="_blank">
         <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
           <URow gap="sm" block>
-            <UIcon name="category" color="success" size="md" class="-mt-1" />
+            <UIcon :src="Category" color="success" size="md" class="-mt-1" />
 
             <UCol gap="sm">
               <UText :label="t('label.components')" size="lg" weight="semibold" />
@@ -86,7 +86,7 @@
       <ULink href="https://github.com/vuelessjs/vueless" target="_blank">
         <UCard variant="outlined" class="flex items-center hover:bg-primary/2">
           <URow gap="sm" block>
-            <UIcon name="star" color="success" size="md" class="-mt-1" />
+            <UIcon :src="Star" color="success" size="md" class="-mt-1" />
 
             <UCol gap="sm">
               <UText :label="t('label.star')" size="lg" weight="semibold" />
@@ -108,6 +108,10 @@ import { useModuleI18n } from "../composables/useI18n";
 
 import VuelessOuter from "../assets/images/vueless-logo-outer.svg?component";
 import VuelessInner from "../assets/images/vueless-logo-inner.svg?component";
+
+import Category from "../assets/icons/category.svg?component";
+import Docs from "../assets/icons/docs.svg?component";
+import Star from "../assets/icons/star.svg?component";
 
 const { t } = useModuleI18n();
 

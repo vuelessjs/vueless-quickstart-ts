@@ -32,7 +32,6 @@
     "vueless": "^1.2.3"
   },
   "devDependencies": {
-    "@material-symbols/svg-500": "^0.33.0",
     "@modyfi/vite-plugin-yaml": "^1.1.1",
     "@nabla/vite-plugin-eslint": "^2.0.6",
     "@tsconfig/node20": "^20.1.6",
