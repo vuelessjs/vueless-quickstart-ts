@@ -21,7 +21,7 @@ export default defineConfigWithVueTs(
   {
     name: "global",
     files: ["**/*.{ts,vue}", "**/.storybook/**"],
-    ignores: ["**/dist/**", "**/coverage/**", "**/storybook-static/**"],
+    ignores: ["**/dist/**", "**/storybook-static/**"],
     languageOptions,
   },
   pluginVue.configs["flat/recommended"],
@@ -68,8 +68,8 @@ export default defineConfigWithVueTs(
   },
   {
     name: "vitest",
-    ...pluginVitest.configs.recommended,
     files: ["src/**/tests/*"],
+    ...pluginVitest.configs.recommended,
   },
   {
     name: "eslint",
