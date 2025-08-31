@@ -32,10 +32,10 @@ Useful for viewing and debugging UI components:
 
 ```bash
 # Start Storybook with documentation only
-npm run sb:dev
+npm run sb:dev:docs
 
 # Start Storybook with documentation and stories
-npm run sb:dev-full
+npm run sb:dev
 
 # Build Storybook for deployment
 npm run sb:build
