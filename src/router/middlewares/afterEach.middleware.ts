@@ -13,6 +13,6 @@ export default async (to: RouteLocation) => {
     suffix: import.meta.env.VITE_PROJECT_NAME,
   });
 
-  // Disable global full screen loader.
+  // Disable the global full-screen loader.
   loaderOverlayOff();
 };

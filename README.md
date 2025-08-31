@@ -1,40 +1,24 @@
 # Vueless Quickstart
 
-## How to Run the Application Locally
+## Run the Application Locally
 
-### 1. Install Node.js
+### 1. Install Dependencies
 
-Install **Node.js v22.xx** (refer to the [official instructions](https://nodejs.org/en/download/package-manager/) for your operating system).
-
-### 2. Clone the Repository
-
-Create a directory and clone the application files from the remote Git repository:
-
-```bash
-# Clone the repository
-git clone git@github.com:vuelessjs/vueless-quickstart.git
-
-# Navigate to the application directory
-cd <application_name>
-```
-
-### 3. Install Dependencies
-
-Install all required Node modules:
+Install project dependencies:
 
 ```bash
 npm install
 ```
 
-### 4. Setup Environment Variables
+### 2. Setup Environment Variables
 
-Create a local environment configuration file:
+Create a local environment file by copying the example:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-### 5. Run the Application (Development Mode)
+### 3. Run the Application (Development Mode)
 
 Start the application in development mode:
 
@@ -47,11 +31,11 @@ npm run dev
 Useful for viewing and debugging UI components:
 
 ```bash
-# Start Storybook with documentation and stories
-npm run sb:dev-full
-
 # Start Storybook with documentation only
 npm run sb:dev
+
+# Start Storybook with documentation and stories
+npm run sb:dev-full
 
 # Build Storybook for deployment
 npm run sb:build
@@ -120,7 +104,7 @@ npm run preview
 
 ## Update Browserslist Database
 
-Keep the [Browserslist DB](https://browsersl.ist/) up-to-date:
+Keep the [Browserslist DB](https://browsersl.ist/) up to date:
 
 ```bash
 npx browserslist@latest --update-db
