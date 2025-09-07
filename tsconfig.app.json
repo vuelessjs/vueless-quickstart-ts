@@ -1,5 +1,6 @@
 {
   "include": [
+    "components.d.ts",
     "env.d.ts",
     "src/**/*",
     "src/**/*.vue"
