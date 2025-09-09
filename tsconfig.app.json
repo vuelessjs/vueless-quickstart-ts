@@ -3,7 +3,9 @@
     "components.d.ts",
     "env.d.ts",
     "src/**/*",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    ".vueless/**/*",
+    ".vueless/**/*.vue"
   ],
   "exclude": ["dist/**/*"],
   "compilerOptions": {
@@ -22,7 +24,7 @@
 
     /* Path settings */
     "baseUrl": ".",
-    "rootDir": "./src",
+    "rootDirs": ["./.vueless", "./src"],
     "outDir": "./dist",
     "paths": {
       "@/*": ["src/*"],
