@@ -60,7 +60,7 @@ export default defineConfigWithVueTs(
   },
   {
     name: "vueless-component-config",
-    files: [".vueless/*.config.{js,ts}"],
+    files: [".vueless/configs/*.ts", ".vueless/**/config.ts"],
     rules: {
       "vue/max-len": ["error", { code: 140 }],
       "prettier/prettier": ["warn", { printWidth: 130 }],
