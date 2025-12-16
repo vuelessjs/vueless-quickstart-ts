@@ -7,7 +7,7 @@ import type { UnknownObject } from "vueless/types";
 
 /* Vite plugins */
 import Vue from "@vitejs/plugin-vue";
-import Yaml from "@modyfi/vite-plugin-yaml";
+import Yaml from "@rollup/plugin-yaml";
 import Eslint from "@nabla/vite-plugin-eslint";
 import VueI18n from "@intlify/unplugin-vue-i18n/vite";
 import { visualizer as BuildVisualizer } from "rollup-plugin-visualizer";
