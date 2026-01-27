@@ -44,7 +44,7 @@
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.4.6",
-    "@vueless/storybook": "^1.4.0",
+    "@vueless/storybook": "^1.4.1",
     "eslint": "^9.39.2",
     "eslint-plugin-storybook": "^10.1.9",
     "eslint-plugin-vue": "^10.6.2",
